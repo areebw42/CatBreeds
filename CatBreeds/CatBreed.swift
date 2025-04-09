@@ -7,9 +7,13 @@
 
 import SwiftUI
 
-struct CatBreed: Identifiable, Equatable {
-    let id = UUID()
-    let name : String
-    let imageName : String
-    let description : String
+struct CatBreed: Identifiable, Equatable, Decodable {
+    var id = UUID()
+    var breed : String
+    var country : String
+    var origin : String
+    var coat : String
+    var pattern : String
+    
+    var imageName : String
 }
