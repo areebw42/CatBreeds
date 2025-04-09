@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct CatBreedsApp: App {
+struct catbreedsApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
