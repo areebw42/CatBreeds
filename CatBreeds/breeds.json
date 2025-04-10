@@ -1,6 +1,4 @@
-{
-    "current_page": 1,
-    "data": [
+[
         {
             "breed": "Abyssinian",
             "country": "Ethiopia",
@@ -688,4 +686,4 @@
             "pattern": "Solid"
         }
     ]
-}
+

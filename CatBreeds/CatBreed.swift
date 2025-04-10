@@ -15,5 +15,11 @@ struct CatBreed: Identifiable, Equatable, Decodable {
     var coat : String
     var pattern : String
     
-    var imageName : String
+    private enum CodingKeys : String, CodingKey {
+        case breed
+        case country
+        case origin
+        case coat
+        case pattern
+    }
 }

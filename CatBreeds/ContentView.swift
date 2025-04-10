@@ -27,7 +27,7 @@ struct ContentView: View {
     
     @State private var breeds: [CatBreed] = []
     @State private var selectedBreed: CatBreed?
-    @State private var showBreeds: Bool = true
+    @State private var showDetail: Bool = true
     
     var body: some View {
         ZStack {
@@ -50,7 +50,7 @@ struct ContentView: View {
                         .onTapGesture {
                             withAnimation(.spring()) {
                                 selectedBreed = breed
-                                showBreeds.toggle()
+                                showDetail.toggle()
                             }
                         }
                     }
@@ -64,6 +64,15 @@ struct ContentView: View {
         }
         .onAppear() {
             breeds = loadCatBreeds()
+        }
+        if showDetail, let selectedBreed = selectedBreed {
+            CatBreedDetailView(
+                catBreed: selectedBreed,
+                animation: animation,
+                showDetail: $showDetail,
+                selectedCat: $selectedBreed
+            )
+            .transition(.asymmetric(insertion: .scale.animation(.spring()), removal: .opacity.animation(.easeOut)))
         }
     }
 }
