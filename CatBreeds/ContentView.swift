@@ -26,16 +26,19 @@ struct ContentView: View {
     @Namespace private var animation
     
     @State private var breeds: [CatBreed] = []
+    @State private var displayedBreeds: [CatBreed] = []
     @State private var selectedBreed: CatBreed?
     @State private var showDetail: Bool = true
+    
+    private let pageSize = 20
     
     var body: some View {
         ZStack {
             ScrollView{
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 150), spacing: 16)], spacing: 16){
-                    ForEach(breeds) { breed in
+                    ForEach(displayedBreeds) { breed in
                         VStack{
-                            Image(systemName: "chevron.right")
+                            Image(systemName: "pawprint.fill")
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: 120, height: 120)
@@ -53,6 +56,11 @@ struct ContentView: View {
                                 showDetail.toggle()
                             }
                         }
+                        .onAppear(){
+                            if breed == displayedBreeds.last {
+                                loadNextPage()
+                            }
+                        }
                     }
                     .padding()
                     .background(Color(.systemBackground))
@@ -64,6 +72,7 @@ struct ContentView: View {
         }
         .onAppear() {
             breeds = loadCatBreeds()
+            displayedBreeds = Array(breeds.prefix(pageSize))
         }
         if showDetail, let selectedBreed = selectedBreed {
             CatBreedDetailView(
@@ -74,6 +83,12 @@ struct ContentView: View {
             )
             .transition(.asymmetric(insertion: .scale.animation(.spring()), removal: .opacity.animation(.easeOut)))
         }
+    }
+    private func loadNextPage() {
+        let currentCount = displayedBreeds.count
+        guard currentCount < breeds.count else { return }
+        let nextCount = min(currentCount + pageSize, breeds.count)
+        displayedBreeds.append(contentsOf: breeds[currentCount..<nextCount])
     }
 }
     #Preview {

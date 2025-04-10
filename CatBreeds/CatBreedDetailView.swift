@@ -17,7 +17,7 @@ struct CatBreedDetailView: View {
     var body: some View {
         ZStack(alignment :.topTrailing) {
             VStack(spacing: 20) {
-                Image(systemName: "xmark.circle.fill")
+                Image(systemName: "pawprint.fill")
                     .resizable()
                     .scaledToFill()
                     .frame(width: 250, height: 250)
