@@ -44,7 +44,7 @@ struct ContentView: View {
    
     
     private var catGridView: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 150), spacing: 16)], spacing: 16){
+        Grid(){
             ForEach(displayedBreeds) { breed in
                 catCardView(breed: breed).onTapGesture {
                     withAnimation(.spring()) {
