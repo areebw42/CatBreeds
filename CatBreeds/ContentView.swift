@@ -51,12 +51,13 @@ struct ContentView: View {
                         selectedBreed = breed
                         showDetail=true
                     }
-                }
-                .onAppear(){
-                    if breed == displayedBreeds.last {
-                        loadNextPage()
-                    }
-                }
+                }.onScrollVisibilityChange({_ in 
+                    
+                        if breed == displayedBreeds.last {
+                            loadNextPage()
+                        }
+                })
+                
             }
             .padding()
             .background(Color(.systemBackground))
