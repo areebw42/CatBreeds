@@ -10,21 +10,18 @@ import SwiftUI
 struct CatBreedDetailView: View {
     let catBreed: CatBreed
     var animation: Namespace.ID
-    
+    @State var img: String = ""
     @Binding var showDetail: Bool
     @Binding var selectedCat: CatBreed?
     
     var body: some View {
         ZStack(alignment :.topTrailing) {
             VStack(spacing: 20) {
-                Image(systemName: "pawprint.fill")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 250, height: 250)
-                    .clipped()
-                    .matchedGeometryEffect(id: catBreed.id, in : animation)
-                    .cornerRadius(16)
-                    .padding(.top, 40)
+                AsyncImage(url: URL(string: img)){image in
+                    image
+                        .image?.resizable().scaledToFill()
+                }
+                    .task {img = await fetchImage(breed: catBreed.breed).query.pages.first?.thumbnail.source ?? "pawprint.fill"}
                 
                 Text(catBreed.breed)
                     .font(.largeTitle)

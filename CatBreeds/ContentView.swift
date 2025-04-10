@@ -7,6 +7,25 @@
 
 import SwiftUI
 
+struct catCardView: View {
+    let breed: CatBreed
+    @State var img: String = ""
+  var body: some View {
+      VStack{
+          
+          AsyncImage(url: URL(string: img)){image in
+              image
+                  .image?.resizable().scaledToFill()
+          }
+              .task {img = await fetchImage(breed: breed.breed).query.pages.first?.thumbnail.source ?? "pawprint.fill"}
+          
+          Text(breed.breed)
+          .font(.headline)
+          .padding(.top, 8)
+      }
+    }
+ }
+
 struct ContentView: View {
     @Namespace private var animation
     
@@ -14,7 +33,6 @@ struct ContentView: View {
     @State private var displayedBreeds: [CatBreed] = []
     @State private var selectedBreed: CatBreed?
     @State private var showDetail: Bool = false
-    
     @State private var alertMessage : String?
     
     private let pageSize = 20
@@ -23,23 +41,12 @@ struct ContentView: View {
         let data : [CatBreed]
     }
     
+   
+    
     private var catGridView: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 150), spacing: 16)], spacing: 16){
             ForEach(displayedBreeds) { breed in
-                VStack{
-                    Image(systemName: "pawprint.fill")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 120, height: 120)
-                        .clipped()
-                        .matchedGeometryEffect(id: breed.id, in: animation)
-                        .cornerRadius(12)
-                    
-                    Text(breed.breed)
-                    .font(.headline)
-                    .padding(.top, 8)
-                }
-                .onTapGesture {
+                catCardView(breed: breed).onTapGesture {
                     withAnimation(.spring()) {
                         selectedBreed = breed
                         showDetail=true
@@ -86,6 +93,8 @@ struct ContentView: View {
         let nextCount = min(currentCount + pageSize, breeds.count)
         displayedBreeds.append(contentsOf: breeds[currentCount..<nextCount])
     }
+    
+ 
     
 }
   
