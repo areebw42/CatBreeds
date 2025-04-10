@@ -29,7 +29,7 @@ struct ContentView: View {
                 VStack{
                     Image(systemName: "pawprint.fill")
                         .resizable()
-                        .scaledToFill()
+                        .scaledToFit()
                         .frame(width: 120, height: 120)
                         .clipped()
                         .matchedGeometryEffect(id: breed.id, in: animation)
@@ -39,6 +39,7 @@ struct ContentView: View {
                     .font(.headline)
                     .padding(.top, 8)
                 }
+                .scaledToFit()
                 .onTapGesture {
                     withAnimation(.spring()) {
                         selectedBreed = breed

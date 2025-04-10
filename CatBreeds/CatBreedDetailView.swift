@@ -19,7 +19,7 @@ struct CatBreedDetailView: View {
             VStack(spacing: 20) {
                 Image(systemName: "pawprint.fill")
                     .resizable()
-                    .scaledToFill()
+                    .scaledToFit()
                     .frame(width: 250, height: 250)
                     .clipped()
                     .matchedGeometryEffect(id: catBreed.id, in : animation)
