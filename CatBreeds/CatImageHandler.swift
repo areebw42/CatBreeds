@@ -35,7 +35,7 @@ func sanitizeInput(breed: String, addSuffix: Bool) -> String {
 
 func fetchImage(breed: String) async -> ImageResponse {
     var breedName = sanitizeInput(breed: breed, addSuffix: true)
-    let url = URL(string: "https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&titles=\(breedName)&prop=pageimages|pageterms&pithumbsize=300&redirects=1")!
+    var url = URL(string: "https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&titles=\(breedName)&prop=pageimages|pageterms&pithumbsize=300&redirects=1")!
     var received: ImageResponse = ImageResponse(query: Query(pages: []))
     print ("Fetching image for \(breed) as \(breedName)")
     do{
@@ -46,6 +46,7 @@ func fetchImage(breed: String) async -> ImageResponse {
     if received.query.pages.isEmpty {
         breedName = sanitizeInput(breed: breed, addSuffix: false)
         print("Using fallback for \(breed) as \(breedName)")
+        url = URL(string: "https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&titles=\(breedName)&prop=pageimages|pageterms&pithumbsize=300&redirects=1")!
         do{ let (data, _) = try await URLSession.shared.data(from: url)
             received = try JSONDecoder().decode(ImageResponse.self, from: data)}
         catch{}
