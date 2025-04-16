@@ -8,20 +8,39 @@
 import SwiftUI
 
 struct catCardView: View {
-    let breed: CatBreed
-    @State var img: String = ""
+    let breed : CatBreed
+    @State var image : URL? = nil
   var body: some View {
       VStack{
           
-          AsyncImage(url: URL(string: img)){image in
-              image
-                  .image?.resizable().scaledToFill()
+          if image != nil {
+              AsyncImage(url: image){ phase in
+                  if let image = phase.image {
+                      image.resizable().scaledToFit()
+                  }
+                  else if phase.error != nil {
+                      let description = phase.error?.localizedDescription ?? "Unknown Error"
+                      Text(description)
+                  }
+                  else{
+                      ProgressView()
+                  }
+              }
           }
-              .task {img = await fetchImage(breed: breed.breed).query.pages.first?.thumbnail.source ?? "pawprint.fill"}
+          
+          else{
+              Text("Image Unavailable")
+                  .foregroundColor(.red).scaledToFit()
+          }
+              
           
           Text(breed.breed)
           .font(.headline)
           .padding(.top, 8)
+      }.task {
+          print ("beginning image fetch")
+          image = await fetchImage(breed: breed.breed)
+          print ("image fetched")
       }
     }
  }
@@ -51,12 +70,13 @@ struct ContentView: View {
                         selectedBreed = breed
                         showDetail=true
                     }
-                }.onScrollVisibilityChange({_ in 
-                    
-                        if breed == displayedBreeds.last {
-                            loadNextPage()
-                        }
-                })
+                }
+                .scaledToFit()
+                .onScrollVisibilityChange(){_ in 
+                    if breed == displayedBreeds.last{
+                        loadNextPage()
+                    }
+                }
                 
             }
             .padding()
@@ -74,8 +94,8 @@ struct ContentView: View {
             .padding()
         }
         .task {
-            breeds = await fetchBreeds().data
-            displayedBreeds = Array(breeds.prefix(pageSize))
+            breeds = await fetchBreeds()
+            loadNextPage()
         }
         
         if showDetail, let selectedBreed = selectedBreed {
@@ -88,13 +108,16 @@ struct ContentView: View {
             .transition(.asymmetric(insertion: .scale.animation(.spring()), removal: .opacity.animation(.easeOut)))
         }
     }
-    private func loadNextPage() {
-        let currentCount = displayedBreeds.count
+    private func loadNextPage()  {
+       let currentCount = displayedBreeds.count
         guard currentCount < breeds.count else { return }
         let nextCount = min(currentCount + pageSize, breeds.count)
         displayedBreeds.append(contentsOf: breeds[currentCount..<nextCount])
+      
+        
     }
     
+  
  
     
 }

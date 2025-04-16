@@ -15,29 +15,33 @@ struct CatBreedDetailView: View {
     @Binding var selectedCat: CatBreed?
     
     var body: some View {
-        ZStack(alignment :.topTrailing) {
-            VStack(spacing: 20) {
-                AsyncImage(url: URL(string: img)){image in
-                    image
-                        .image?.resizable().scaledToFill()
+        HStack() {
+            VStack() {
+                
+                if catBreed.image != nil {
+                    AsyncImage(url: catBreed.image){image in
+                        image
+                            .image?.resizable().scaledToFit()
+                    }
                 }
-                    .task {img = await fetchImage(breed: catBreed.breed).query.pages.first?.thumbnail.source ?? "pawprint.fill"}
+                    
                 
                 Text(catBreed.breed)
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.top, 20)
+                    .scaledToFit()
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Country: \(catBreed.country)")
-                    Text("Origin: \(catBreed.origin)")
-                    Text("Coat: \(catBreed.coat)")
-                    Text("Pattern: \(catBreed.pattern)")
+                    Text("Country: \(catBreed.country)").scaledToFit()
+                    Text("Origin: \(catBreed.origin)").scaledToFit()
+                    Text("Coat: \(catBreed.coat)").scaledToFit()
+                    Text("Pattern: \(catBreed.pattern)").scaledToFit()
                 }
                 .font(.body)
                 .padding(.horizontal)
                 
-                Spacer()
+              
             }
             
             Button(action: {
@@ -50,8 +54,8 @@ struct CatBreedDetailView: View {
             }, label: {
                 Image(systemName: "xmark.circle.fill")
                     .resizable()
-                    .frame(width: 32, height: 32)
-                    .padding()
+                    .frame(width: 30, height: 30)
+                    
                 
             })
         }

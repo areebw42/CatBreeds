@@ -49,7 +49,7 @@ struct FactResponse: Decodable {
     let to : Int
     let total : Int
 }
-func fetchBreeds() async -> BreedResponse {
+func fetchBreeds() async -> [CatBreed] {
     let url = URL(string: "https://catfact.ninja/breeds?limit=1000")!
     var received: BreedResponse? = nil
     do {
@@ -59,6 +59,10 @@ func fetchBreeds() async -> BreedResponse {
     catch {
     
     }
-    return received ?? BreedResponse(current_page: 0, data: [], first_page_url: "", from: 0, last_page: 0, last_page_url: "", links: [], next_page_url: nil, path: "", per_page: 0, prev_page_url: nil, to: 0, total: 0)
+    
+    let breeds = received?.data
+    
+    return breeds ?? []
 }
+
 
