@@ -9,14 +9,14 @@ import SwiftUI
 
 struct CatBreed: Identifiable, Equatable, Decodable {
     var id = UUID()
-    var image : URL? = nil
-    var breed : String
-    var country : String
-    var origin : String
-    var coat : String
-    var pattern : String
-    
-    private enum CodingKeys : String, CodingKey {
+    var image: URL? = nil
+    var breed: String
+    var country: String
+    var origin: String
+    var coat: String
+    var pattern: String
+
+    private enum CodingKeys: String, CodingKey {
         case breed
         case country
         case origin

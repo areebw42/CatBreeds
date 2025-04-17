@@ -13,25 +13,24 @@ struct CatBreedDetailView: View {
     @State var img: String = ""
     @Binding var showDetail: Bool
     @Binding var selectedCat: CatBreed?
-    
+
     var body: some View {
-        HStack() {
-            VStack() {
-                
+        HStack {
+            VStack {
+
                 if catBreed.image != nil {
-                    AsyncImage(url: catBreed.image){image in
+                    AsyncImage(url: catBreed.image) { image in
                         image
                             .image?.resizable().scaledToFit()
                     }
                 }
-                    
-                
+
                 Text(catBreed.breed)
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.top, 20)
                     .scaledToFit()
-                
+
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Country: \(catBreed.country)").scaledToFit()
                     Text("Origin: \(catBreed.origin)").scaledToFit()
@@ -40,30 +39,31 @@ struct CatBreedDetailView: View {
                 }
                 .font(.body)
                 .padding(.horizontal)
-                
-              
+
             }
-            
-            Button(action: {
-                withAnimation(.spring()) {
-                    showDetail = false
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        selectedCat = nil
+
+            Button(
+                action: {
+                    withAnimation(.spring()) {
+                        showDetail = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            selectedCat = nil
+                        }
                     }
+                },
+                label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .resizable()
+                        .frame(width: 30, height: 30)
+
                 }
-            }, label: {
-                Image(systemName: "xmark.circle.fill")
-                    .resizable()
-                    .frame(width: 30, height: 30)
-                    
-                
-            })
+            )
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(
             Color(.systemBackground)
                 .ignoresSafeArea()
-            )
-        
+        )
+
     }
 }

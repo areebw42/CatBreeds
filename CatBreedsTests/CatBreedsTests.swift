@@ -6,6 +6,7 @@
 //
 
 import XCTest
+
 @testable import CatBreeds
 
 final class CatBreedsTests: XCTestCase {

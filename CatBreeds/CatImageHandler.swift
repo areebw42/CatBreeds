@@ -36,26 +36,28 @@ func sanitizeInput(breed: String, addSuffix: Bool) -> String {
     toReturn = removePunctuation(from: toReturn, delimiter: "(")
     toReturn = removePunctuation(from: toReturn, delimiter: ",")
     toReturn = removePunctuation(from: toReturn, delimiter: "[")
-    if toReturn.contains("Cymric"){
+    if toReturn.contains("Cymric") {
         toReturn = "Cymric"
     }
     if addSuffix {
-        if !toReturn.lowercased().hasSuffix("_cat"){
+        if !toReturn.lowercased().hasSuffix("_cat") {
             toReturn += "_cat"
         }
     }
     return toReturn
 }
 
-func fetchImageResponse(breedName : String) async -> ImageResponse{
-    let url = URL(string: "https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&titles=\(breedName)&prop=pageimages|pageterms&pithumbsize=300&redirects=1")!
+func fetchImageResponse(breedName: String) async -> ImageResponse {
+    let url = URL(
+        string:
+            "https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&titles=\(breedName)&prop=pageimages|pageterms&pithumbsize=300&redirects=1"
+    )!
     var received: ImageResponse = ImageResponse(query: Query(pages: []))
 
-    do{
+    do {
         let (data, _) = try await URLSession.shared.data(from: url)
         received = try JSONDecoder().decode(ImageResponse.self, from: data)
-    }
-    catch{}
+    } catch {}
     return received
 }
 
@@ -66,7 +68,7 @@ func fetchImage(breed: String) async -> URL? {
         breedName = sanitizeInput(breed: breed, addSuffix: false)
         received = await fetchImageResponse(breedName: breedName)
     }
-   
+
     let address = received.query.pages.first?.thumbnail.source ?? ""
     guard !address.isEmpty else {
         return nil
