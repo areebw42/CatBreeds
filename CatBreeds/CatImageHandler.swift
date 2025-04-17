@@ -33,11 +33,20 @@ func removePunctuation(from string: String, delimiter: Character) -> String {
 
 func sanitizeInput(breed: String, addSuffix: Bool) -> String {
     var toReturn = breed.replacingOccurrences(of: " ", with: "_")
+    if toReturn.contains("Persian") && toReturn.contains("Traditional") {
+        toReturn = "Traditional_Persian"
+    }
     toReturn = removePunctuation(from: toReturn, delimiter: "(")
     toReturn = removePunctuation(from: toReturn, delimiter: ",")
     toReturn = removePunctuation(from: toReturn, delimiter: "[")
     if toReturn.contains("Cymric") {
         toReturn = "Cymric"
+    }
+    if toReturn.contains("Cheetoh") {
+        toReturn = "Bengal"
+    }
+    if toReturn.contains("Sam_Sawet") {
+        toReturn = "Thai"
     }
     if addSuffix {
         if !toReturn.lowercased().hasSuffix("_cat") {
