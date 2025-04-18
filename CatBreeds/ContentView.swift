@@ -24,7 +24,7 @@ struct ContentView: View {
     }
     
     private var catGridView: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 400), spacing: 16)], spacing: 16){
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 150), spacing: 16)], spacing: 16){
             ForEach(displayedBreeds) { breed in
                 VStack{
                     Image(systemName: "pawprint.fill")
@@ -36,6 +36,7 @@ struct ContentView: View {
                         .cornerRadius(12)
                     
                     Text(breed.breed)
+                    .frame(width: 100, height: .infinity)
                     .font(.headline)
                     .scaledToFill()
                 }
