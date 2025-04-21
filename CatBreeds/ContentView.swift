@@ -14,25 +14,35 @@ struct catCardView: View {
         VStack {
 
             if image != nil {
-                AsyncImage(url: image) { phase in
-                    if let image = phase.image {
-                        image.resizable().scaledToFit()
-                    } else if phase.error != nil {
-                        let description =
-                            phase.error?.localizedDescription ?? "Unknown Error"
-                        Text(description)
-                    } else {
-                        ProgressView()
-                    }
+             if let imageURL = image {
+                 AsyncImage(url: imageURL) { phase in
+                       if let image = phase.image {
+                           image.resizable().scaledToFit()
+                       } else if phase.error != nil {
+                           AsyncImage(url: imageURL) { phase in
+                               if let image = phase.image {
+                                   image.resizable().scaledToFit()
+                               }
+                           }
+                       }
+                     
+                     else {
+                           ProgressView()
+                       }
+                 }
                 }
             } else {
                 Text("Image Unavailable")
-                    .foregroundColor(.red).scaledToFit()
+                    .foregroundColor(.red)
+                    .frame(width: 100)
+                    .font(.headline)
+                    .scaledToFit()
             }
 
             Text(breed.breed)
+                .frame(width: 100)
                 .font(.headline)
-                .padding(.top, 8)
+                .scaledToFit()
         }.task {
             print("beginning image fetch")
             image = await fetchImage(breed: breed.breed)
@@ -57,7 +67,7 @@ struct ContentView: View {
     }
 
     private var catGridView: some View {
-        Grid {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 150), spacing: 16)], spacing: 16) {
             ForEach(displayedBreeds) { breed in
                 catCardView(breed: breed).onTapGesture {
                     withAnimation(.spring()) {
