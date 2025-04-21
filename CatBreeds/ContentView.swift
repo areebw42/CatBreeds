@@ -19,6 +19,9 @@ struct catCardView: View {
                        if let image = phase.image {
                            image.resizable().scaledToFit()
                        } else if phase.error != nil {
+                           let description =
+                               phase.error?.localizedDescription ?? "Unknown Error"
+                           Text(description)
                            AsyncImage(url: imageURL) { phase in
                                if let image = phase.image {
                                    image.resizable().scaledToFit()
