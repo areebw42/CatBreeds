@@ -66,19 +66,13 @@ struct ContentView: View {
                 }
                 .padding()
             }
-            if showDescription, let selectedBreed = selectedBreed {
-                CatBreedDetailView(
-                    catBreed: selectedBreed,
-                    animation: animation,
-                    showDescription: $showDescription,
-                    selectedBreed: $selectedBreed
-                )
+            
                 //.transition(.asymmetric(insertion: .scale.animation(.spring()),
                                        // removal: .opacity.animation(.easeOut)))
             }
         }
     }
-}
+
 
 #Preview {
     ContentView()
