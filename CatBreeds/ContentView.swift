@@ -9,45 +9,53 @@ import SwiftUI
 
 struct ContentView: View {
     @Namespace private var animation
-    
+
     @State private var breeds: [CatBreed] = []
     @State private var displayedBreeds: [CatBreed] = []
     @State private var selectedBreed: CatBreed?
     @State private var showDetail: Bool = false
-    
-    @State private var alertMessage : String?
-    
+
+    @State private var alertMessage: String?
+
     private let pageSize = 20
-    
-    struct BreedsResponse : Decodable {
-        let data : [CatBreed]
+    private let standardWidth: CGFloat = 120
+    private let standardCornerRadius: CGFloat = 12
+    private let standardSpacing: CGFloat = 16
+
+    struct BreedsResponse: Decodable {
+        let data: [CatBreed]
     }
-    
+
     private var catGridView: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 150), spacing: 16)], spacing: 16){
+        LazyVGrid(
+            columns: [
+                GridItem(.adaptive(minimum: 150), spacing: standardSpacing)
+            ],
+            spacing: standardSpacing
+        ) {
             ForEach(displayedBreeds) { breed in
-                VStack{
+                VStack {
                     Image(systemName: "pawprint.fill")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 120, height: 120)
+                        .frame(width: standardWidth, height: standardWidth)
                         .clipped()
                         .matchedGeometryEffect(id: breed.id, in: animation)
-                        .cornerRadius(12)
-                    
+                        .cornerRadius(standardCornerRadius)
+
                     Text(breed.breed)
-                    .frame(width: 100)
-                    .font(.headline)
-                    .scaledToFill()
+                        .frame(width: standardWidth)
+                        .font(.headline)
+                        .scaledToFill()
                 }
                 .scaledToFit()
                 .onTapGesture {
                     withAnimation(.spring()) {
                         selectedBreed = breed
-                        showDetail=true
+                        showDetail = true
                     }
                 }
-                .onAppear(){
+                .onAppear {
                     if breed == displayedBreeds.last {
                         loadNextPage()
                     }
@@ -55,23 +63,23 @@ struct ContentView: View {
             }
             .padding()
             .background(Color(.systemBackground))
-            .cornerRadius(12)
+            .cornerRadius(standardCornerRadius)
             .shadow(radius: 3)
         }
     }
-    
+
     var body: some View {
         ZStack {
-            ScrollView{
+            ScrollView {
                 catGridView
             }
             .padding()
         }
         .task {
-            breeds = await fetchBreeds().data
+            breeds = await fetchBreeds()?.data ?? []
             displayedBreeds = Array(breeds.prefix(pageSize))
         }
-        
+
         if showDetail, let selectedBreed = selectedBreed {
             CatBreedDetailView(
                 catBreed: selectedBreed,
@@ -79,7 +87,12 @@ struct ContentView: View {
                 showDetail: $showDetail,
                 selectedCat: $selectedBreed
             )
-            .transition(.asymmetric(insertion: .scale.animation(.spring()), removal: .opacity.animation(.easeOut)))
+            .transition(
+                .asymmetric(
+                    insertion: .scale.animation(.spring()),
+                    removal: .opacity.animation(.easeOut)
+                )
+            )
         }
     }
     private func loadNextPage() {
@@ -88,6 +101,5 @@ struct ContentView: View {
         let nextCount = min(currentCount + pageSize, breeds.count)
         displayedBreeds.append(contentsOf: breeds[currentCount..<nextCount])
     }
-    
+
 }
-  
