@@ -8,20 +8,18 @@ import SwiftUI
 
 struct CatBreedInfoView: View {
     let catBreed: CatBreed
-    @State private var strings: Strings?
+
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(strings?.country ?? "Loading...")
-            Text(strings?.origin ?? "Loading...")
-            Text(strings?.coat ?? "Loading...")
-            Text(strings?.pattern ?? "Loading...")
+            Text("\(country)\(catBreed.breed)")
+            Text("\(origin)\(catBreed.origin)")
+            Text("\(coat)\(catBreed.coat)")
+            Text("\(pattern)\(catBreed.pattern)")
         }
         .font(.body)
         .padding(.horizontal)
-        .onAppear(perform: {
-            strings = Strings(catBreed: catBreed)
-        })
+       
 
     }
 
