@@ -10,11 +10,37 @@ import SwiftUI
 struct CatBreedDetailView: View {
     let catBreed: CatBreed
     var animation: Namespace.ID
-
+    private let animDuration = 0.3
+    @State private var offset = CGSize.zero
     @Binding var showDetail: Bool
 
     private let standardSpacing: CGFloat = 20
     @Binding var selectedCat: CatBreed?
+
+    var drag: some Gesture {
+        DragGesture()
+            .onChanged { gesture in
+                if gesture.translation.height > 0 {
+                    offset = gesture.translation
+                }
+            }
+            .onEnded { gesture in
+                if gesture.translation.height > 150 {
+                    withAnimation(
+                        .spring(),
+                        {
+                            showDetail = false
+                            DispatchQueue.main.asyncAfter(
+                                deadline: .now() + animDuration
+                            ) {
+                                selectedCat = nil
+                            }
+                        }
+                    )
+                }
+                offset = .zero
+            }
+    }
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
@@ -34,7 +60,7 @@ struct CatBreedDetailView: View {
                     .padding(.top, standardSpacing)
 
                 CatBreedInfoView(catBreed: catBreed)
-                Spacer()
+
             }
 
             Button(
@@ -44,7 +70,7 @@ struct CatBreedDetailView: View {
                         {
                             showDetail = false
                             DispatchQueue.main.asyncAfter(
-                                deadline: .now() + 0.3
+                                deadline: .now() + animDuration
                             ) {
                                 selectedCat = nil
                             }
@@ -61,10 +87,8 @@ struct CatBreedDetailView: View {
             )
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(
-            Color(.systemBackground)
-                .ignoresSafeArea()
-        )
-
+        .background(Color(.systemBackground))
+        .offset(y: offset.height)
+        .gesture(drag)
     }
 }

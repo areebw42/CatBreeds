@@ -74,26 +74,27 @@ struct ContentView: View {
                 catGridView
             }
             .padding()
+            if showDetail, let selectedBreed = selectedBreed {
+                CatBreedDetailView(
+                    catBreed: selectedBreed,
+                    animation: animation,
+                    showDetail: $showDetail,
+                    selectedCat: $selectedBreed
+                )
+                .transition(
+                    .asymmetric(
+                        insertion: .scale.animation(.spring()),
+                        removal: .move(edge: .bottom)
+                    )
+                )
+            }
+
         }
         .task {
             breeds = await fetchBreeds()?.data ?? []
             displayedBreeds = Array(breeds.prefix(pageSize))
         }
 
-        if showDetail, let selectedBreed = selectedBreed {
-            CatBreedDetailView(
-                catBreed: selectedBreed,
-                animation: animation,
-                showDetail: $showDetail,
-                selectedCat: $selectedBreed
-            )
-            .transition(
-                .asymmetric(
-                    insertion: .scale.animation(.spring()),
-                    removal: .opacity.animation(.easeOut)
-                )
-            )
-        }
     }
     private func loadNextPage() {
         let currentCount = displayedBreeds.count
