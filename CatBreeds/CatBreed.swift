@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+//breed struct
 struct CatBreed: Identifiable, Equatable, Decodable {
     var id = UUID()
     var breed: String
@@ -15,6 +16,7 @@ struct CatBreed: Identifiable, Equatable, Decodable {
     var coat: String
     var pattern: String
 
+    //define which keys will be decoded
     private enum CodingKeys: String, CodingKey {
         case breed
         case country

@@ -17,6 +17,8 @@ struct ContentView: View {
 
     @State private var alertMessage: String?
 
+    private var loadedOnce = false
+
     private let pageSize = 20
     private let standardWidth: CGFloat = 120
     private let standardCornerRadius: CGFloat = 12
@@ -26,6 +28,7 @@ struct ContentView: View {
         let data: [CatBreed]
     }
 
+    //The view that displays the cards in the grid
     private var catGridView: some View {
         LazyVGrid(
             columns: [
@@ -34,6 +37,7 @@ struct ContentView: View {
             spacing: standardSpacing
         ) {
             ForEach(displayedBreeds) { breed in
+                //The individual cards are displayed by this VStack.
                 VStack {
                     Image(systemName: "pawprint.fill")
                         .resizable()
@@ -55,6 +59,7 @@ struct ContentView: View {
                         showDetail = true
                     }
                 }
+                //We handle pagination here
                 .onAppear {
                     if breed == displayedBreeds.last {
                         loadNextPage()
@@ -90,12 +95,14 @@ struct ContentView: View {
             }
 
         }
+        //Initial fetch of breeds
         .task {
             breeds = await fetchBreeds()?.data ?? []
             displayedBreeds = Array(breeds.prefix(pageSize))
         }
 
     }
+    //Function to actually dislay next page.
     private func loadNextPage() {
         let currentCount = displayedBreeds.count
         guard currentCount < breeds.count else { return }
