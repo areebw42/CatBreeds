@@ -23,13 +23,28 @@ final class CatBreedsUITests: XCTestCase {
     }
 
     @MainActor
-    func testExample() throws {
+    func testDidCardsLoad() throws {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
         app.launch()
-
+        let scrollView = app.scrollViews.firstMatch
+        XCTAssertTrue(scrollView.exists)
+        let numCards = scrollView.staticTexts.allElementsBoundByIndex.count
+        XCTAssertGreaterThan(numCards, 0)
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
+    
+    @MainActor
+    func testPaginationDown() throws {
+        let app = XCUIApplication()
+        app.launch()
+        let scrollView = app.scrollViews.firstMatch
+        XCTAssertTrue(scrollView.exists)
+        scrollView.swipeDown()
+        let numCards = scrollView.staticTexts.allElementsBoundByIndex.count
+        XCTAssertGreaterThanOrEqual(numCards, 20)
+    }
+    
 
     @MainActor
     func testLaunchPerformance() throws {
