@@ -55,6 +55,7 @@ struct ContentView: View {
     @Namespace private var animation
 
     @State private var breeds: [CatBreed] = []
+    @State private var chunkedBreeds: [[CatBreed]] = []
     @State private var displayedBreeds: [CatBreed] = []
     @State private var selectedBreed: CatBreed?
     @State private var showDetail: Bool = false
@@ -76,9 +77,11 @@ struct ContentView: View {
                     }
                 }
                 .scaledToFit()
-                .onScrollVisibilityChange { _ in
-                    if breed == displayedBreeds.last {
-                        loadNextPage()
+                .onScrollVisibilityChange { isVisible in
+                    if isVisible {
+                        if breed == displayedBreeds.last {
+                            loadNextPage()
+                        }
                     }
                 }
 
@@ -99,6 +102,7 @@ struct ContentView: View {
         }
         .task {
             breeds = await fetchBreeds()
+            chunkedBreeds = chunkBreeds(breeds)
             loadNextPage()
         }
 
@@ -123,6 +127,12 @@ struct ContentView: View {
         let nextCount = min(currentCount + pageSize, breeds.count)
         displayedBreeds.append(contentsOf: breeds[currentCount..<nextCount])
 
+    }
+    
+    private func chunkBreeds(_ breeds: [CatBreed]) -> [[CatBreed]] {
+        return stride(from: 0, to: breeds.count, by: pageSize).map {
+            Array(breeds[$0..<min($0 + pageSize, breeds.count)])
+        }
     }
 
 }
