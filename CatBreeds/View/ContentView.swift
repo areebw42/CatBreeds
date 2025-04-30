@@ -7,51 +7,6 @@
 
 import SwiftUI
 
-
-struct catCardView: View {
-    let breed: CatBreed
-    @State var image: URL? = nil
-    var body: some View {
-        VStack {
-
-            if image != nil {
-             if let imageURL = image {
-                 AsyncImage(url: imageURL) { phase in
-                       if let image = phase.image {
-                           image.resizable().scaledToFit()
-                       } else if phase.error != nil {
-                           AsyncImage(url: imageURL) { phase in
-                               if let image = phase.image {
-                                   image.resizable().scaledToFit()
-                               }
-                           }
-                       }
-                     
-                     else {
-                           ProgressView()
-                       }
-                 }
-                }
-            } else {
-                Text("Image Unavailable")
-                    .foregroundColor(.red)
-                    .frame(width: 100)
-                    .font(.headline)
-                    .scaledToFit()
-            }
-
-            Text(breed.breed)
-                .frame(width: 100)
-                .font(.headline)
-                .scaledToFit()
-        }.task {
-            print("beginning image fetch")
-            image = await fetchImage(breed: breed.breed)
-            print("image fetched")
-        }
-    }
-}
-
 struct ContentView: View {
     @Namespace private var animation
 
@@ -83,7 +38,20 @@ struct ContentView: View {
         ) {
             ForEach(displayedBreeds) { breed in
                 //The individual cards are displayed by this VStack.
-                catCardView(breed: breed)
+                VStack {
+                    Image(systemName: "pawprint.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: standardWidth, height: standardWidth)
+                        .clipped()
+                        .matchedGeometryEffect(id: breed.id, in: animation)
+                        .cornerRadius(standardCornerRadius)
+
+                    Text(breed.breed)
+                        .frame(width: standardWidth)
+                        .font(.headline)
+                        .scaledToFill()
+                }
                 .scaledToFit()
                 .onTapGesture {
                     withAnimation(.spring()) {
@@ -91,9 +59,8 @@ struct ContentView: View {
                         showDetail = true
                     }
                 }
-                .scaledToFit()
-                .onScrollVisibilityChange { _ in
-
+                //We handle pagination here
+                .onAppear {
                     if breed == displayedBreeds.last {
                         loadNextPage()
                     }
@@ -102,7 +69,6 @@ struct ContentView: View {
             .padding()
             .background(Color(.systemBackground))
             .cornerRadius(standardCornerRadius)
-
             .shadow(radius: 3)
         }
     }
@@ -113,7 +79,6 @@ struct ContentView: View {
                 catGridView
             }
             .padding()
-
             if showDetail, let selectedBreed = selectedBreed {
                 CatBreedDetailView(
                     catBreed: selectedBreed,
@@ -138,7 +103,6 @@ struct ContentView: View {
 
     }
     //Function to actually dislay next page.
-
     private func loadNextPage() {
         let currentCount = displayedBreeds.count
         guard currentCount < breeds.count else { return }
