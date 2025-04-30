@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-
 /*
  View used to show more detailed information compared to the standard card view.
  It appears when the card view is tapped, and displays the Country, Origin, Coat and Pattern values returned by the API.
@@ -61,21 +60,20 @@ struct CatBreedDetailView: View {
         //ZStack to layer info and button.
         ZStack(alignment: .topTrailing) {
             VStack(spacing: standardSpacing) {
-                Image(systemName: "pawprint.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 250, height: 250)
-                    .clipped()
-                    .matchedGeometryEffect(id: catBreed.id, in: animation)
-                    .cornerRadius(16)
-                    .padding(.top, 40)
-
+                if catBreed.image != nil {
+                    AsyncImage(url: catBreed.image) { image in
+                        image
+                            .image?.resizable().scaledToFit()
+                    }
+                }
                 Text(catBreed.breed)
                     .font(.largeTitle)
                     .fontWeight(.bold)
+
                     .padding(.top, standardSpacing)
 
                 CatBreedInfoView(catBreed: catBreed)
+
 
             }
 

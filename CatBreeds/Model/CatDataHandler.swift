@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 /* The following are decodable structs matching the JSON response from the API*/
 
 struct Fact: Decodable {
