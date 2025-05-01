@@ -7,6 +7,9 @@
 
 import Foundation
 
+
+/* The following are decodable structs matching the JSON response from the API*/
+
 struct Fact: Decodable {
     let fact: String
     let length: Int
@@ -19,47 +22,48 @@ struct Link: Decodable {
 }
 
 struct BreedResponse: Decodable {
-    let current_page: Int
+    let currentPage: Int
     let data: [CatBreed]
-    let first_page_url: String
+    let firstPageUrl: String
     let from: Int
-    let last_page: Int
-    let last_page_url: String
+    let lastPage: Int
+    let lastPageUrl: String
     let links: [Link]
-    let next_page_url: String?
+    let nextPageUrl: String?
     let path: String
-    let per_page: Int
-    let prev_page_url: String?
+    let perPage: Int
+    let prevPageUrl: String?
     let to: Int
     let total: Int
 }
 
 struct FactResponse: Decodable {
-    let current_page: Int
+    let currentPage: Int
     let data: [Fact]
-    let first_page_url: String
+    let firstPageUrl: String
     let from: Int
-    let last_page: Int
-    let last_page_url: String
+    let lastPage: Int
+    let lastPageUrl: String
     let links: [Link]
-    let next_page_url: String?
+    let nextPageUrl: String?
     let path: String
-    let per_page: Int
-    let prev_page_url: String?
+    let perPage: Int
+    let prevPageUrl: String?
     let to: Int
     let total: Int
 }
-func fetchBreeds() async -> [CatBreed] {
+func fetchBreeds() async -> BreedResponse? {
     let url = URL(string: "https://catfact.ninja/breeds?limit=1000")!
     var received: BreedResponse? = nil
     do {
+        //Get the response from the URL, we only need the data portion of the tuple
         let (data, _) = try await URLSession.shared.data(from: url)
-        received = try JSONDecoder().decode(BreedResponse.self, from: data)
+        let decoder = JSONDecoder()
+        //Set the decoding strategy in order to convert from the JSON response's snake case to camel case
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        received = try decoder.decode(BreedResponse.self, from: data)
     } catch {
-
+        print("Failed to fetch data: \(error)")
     }
-
-    let breeds = received?.data
-
-    return breeds ?? []
+    return received
 }
