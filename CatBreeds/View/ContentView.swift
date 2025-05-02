@@ -31,6 +31,7 @@ struct catCardView: View {
                            ProgressView()
                        }
                  }
+                 .clipShape(RoundedRectangle(cornerRadius: 15))
                 }
             } else {
                 Text("Image Unavailable")
