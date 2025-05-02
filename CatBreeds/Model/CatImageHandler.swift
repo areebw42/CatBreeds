@@ -23,7 +23,7 @@ struct ImageResponse: Decodable {
     let query: Query
 }
 
-func removePunctuation(from string: String, delimiter: Character) -> String {
+func removeChar(from string: String, delimiter: Character) -> String {
     var s = string
     if s.contains(delimiter) {
         s.removeSubrange(s.firstIndex(of: delimiter)!..<s.endIndex)
@@ -36,9 +36,9 @@ func sanitizeInput(breed: String, addSuffix: Bool) -> String {
     if toReturn.contains("Persian") && toReturn.contains("Traditional") {
         toReturn = "Traditional_Persian"
     }
-    toReturn = removePunctuation(from: toReturn, delimiter: "(")
-    toReturn = removePunctuation(from: toReturn, delimiter: ",")
-    toReturn = removePunctuation(from: toReturn, delimiter: "[")
+    toReturn = removeChar(from: toReturn, delimiter: "(")
+    toReturn = removeChar(from: toReturn, delimiter: ",")
+    toReturn = removeChar(from: toReturn, delimiter: "[")
     if toReturn.contains("Cymric") {
         toReturn = "Cymric"
     }
