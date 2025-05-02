@@ -53,17 +53,23 @@ struct FactResponse: Decodable {
     let total: Int
 }
 func fetchBreeds() async -> BreedResponse? {
-    let url = URL(string: "https://catfact.ninja/breeds?limit=1000")!
+    let url = URL(string: "https://catfact.ninja/breeds?limit=100")!
     var received: BreedResponse? = nil
     do {
         //Get the response from the URL, we only need the data portion of the tuple
-        let (data, _) = try await URLSession.shared.data(from: url)
+        //Fix cache bug by using ephemeral config with nil cache
+        let config = URLSessionConfiguration.ephemeral
+        config.urlCache = nil
+        let session = URLSession(configuration: config)
+        let (data, responce) = try await session.data(from: url)
+        print(responce)
         let decoder = JSONDecoder()
         //Set the decoding strategy in order to convert from the JSON response's snake case to camel case
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         received = try decoder.decode(BreedResponse.self, from: data)
     } catch {
         print("Failed to fetch data: \(error)")
+        exit(1)
     }
     return received
 }

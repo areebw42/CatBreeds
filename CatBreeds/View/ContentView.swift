@@ -12,7 +12,7 @@ struct catCardView: View {
     let breed: CatBreed
     @State var image: URL? = nil
     var body: some View {
-        VStack {
+        LazyVStack {
 
             if image != nil {
              if let imageURL = image {
@@ -69,46 +69,39 @@ struct ContentView: View {
     private let standardWidth: CGFloat = 120
     private let standardCornerRadius: CGFloat = 12
     private let standardSpacing: CGFloat = 16
-
+    private let standardColumns = [GridItem(.flexible()), GridItem(.flexible())]
+    
     struct BreedsResponse: Decodable {
         let data: [CatBreed]
     }
 
     //The view that displays the cards in the grid
     private var catGridView: some View {
-        LazyVGrid(
-            columns: [
-                GridItem(.adaptive(minimum: 150), spacing: standardSpacing)
-            ],
-            spacing: standardSpacing
-        ) {
-            ForEach(displayedBreeds) { breed in
-                //The individual cards are displayed by this VStack.
-                catCardView(breed: breed)
-                .scaledToFit()
-                .onTapGesture {
-                    withAnimation(.spring()) {
-                        selectedBreed = breed
-                        showDetail = true
-                    }
-                }
-                .scaledToFit()
-                .onScrollVisibilityChange { isVisible in
-                    if isVisible {
-                        if breed == displayedBreeds.last {
-                            loadNextPage()
+        ScrollView{
+            //This structure paginates the data in both directions, in practice it loads everything almost instantly, if there were thousands of elements returned then it would diplay as many as possible while loading others.
+            LazyVStack{
+                ForEach(chunkedBreeds, id: \.self){ page in
+                    LazyVGrid(columns: standardColumns, spacing: standardSpacing) {
+                        ForEach(page) { item in
+                            catCardView(breed: item)
+                                .onTapGesture {selectedBreed = item; showDetail = true}
                         }
-
                     }
                 }
             }
-            .padding()
-            .background(Color(.systemBackground))
-            .cornerRadius(standardCornerRadius)
-
-            .shadow(radius: 3)
+        }
+        .task {
+            breeds = await fetchBreeds()?.data ?? []
+            if breeds == [] {
+                exit(1)
+            }
+            chunkedBreeds = chunkBreeds(breeds)
+            if chunkedBreeds == [] {
+                exit(1)
+            }
         }
     }
+    
 
     var body: some View {
         ZStack {
@@ -134,20 +127,8 @@ struct ContentView: View {
 
         }
         //Initial fetch of breeds
-        .task {
-            breeds = await fetchBreeds()?.data ?? []
-            displayedBreeds = Array(breeds.prefix(pageSize))
+       
 
-        }
-
-    }
-    //Function to actually dislay next page.
-
-    private func loadNextPage() {
-        let currentCount = displayedBreeds.count
-        guard currentCount < breeds.count else { return }
-        let nextCount = min(currentCount + pageSize, breeds.count)
-        displayedBreeds.append(contentsOf: breeds[currentCount..<nextCount])
     }
     
     private func chunkBreeds(_ breeds: [CatBreed]) -> [[CatBreed]] {

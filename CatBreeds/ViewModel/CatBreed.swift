@@ -8,7 +8,7 @@
 import SwiftUI
 
 //breed struct
-struct CatBreed: Identifiable, Equatable, Decodable {
+struct CatBreed: Identifiable, Equatable, Decodable, Hashable {
     var id = UUID()
     var image: URL? = nil
     var breed: String
