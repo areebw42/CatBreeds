@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct catCardView: View {
     let breed: CatBreed
     @State var image: URL? = nil
@@ -15,22 +14,20 @@ struct catCardView: View {
         VStack {
 
             if image != nil {
-             if let imageURL = image {
-                 AsyncImage(url: imageURL) { phase in
-                       if let image = phase.image {
-                           image.resizable().scaledToFit()
-                       } else if phase.error != nil {
-                           AsyncImage(url: imageURL) { phase in
-                               if let image = phase.image {
-                                   image.resizable().scaledToFit()
-                               }
-                           }
-                       }
-                     
-                     else {
-                           ProgressView()
-                       }
-                 }
+                if let imageURL = image {
+                    AsyncImage(url: imageURL) { phase in
+                        if let image = phase.image {
+                            image.resizable().scaledToFit()
+                        } else if phase.error != nil {
+                            AsyncImage(url: imageURL) { phase in
+                                if let image = phase.image {
+                                    image.resizable().scaledToFit()
+                                }
+                            }
+                        } else {
+                            ProgressView()
+                        }
+                    }
                 }
             } else {
                 Text("Image Unavailable")
@@ -84,20 +81,20 @@ struct ContentView: View {
             ForEach(displayedBreeds) { breed in
                 //The individual cards are displayed by this VStack.
                 catCardView(breed: breed)
-                .scaledToFit()
-                .onTapGesture {
-                    withAnimation(.spring()) {
-                        selectedBreed = breed
-                        showDetail = true
+                    .scaledToFit()
+                    .onTapGesture {
+                        withAnimation(.spring()) {
+                            selectedBreed = breed
+                            showDetail = true
+                        }
                     }
-                }
-                .scaledToFit()
-                .onScrollVisibilityChange { _ in
+                    .scaledToFit()
+                    .onScrollVisibilityChange { _ in
 
-                    if breed == displayedBreeds.last {
-                        loadNextPage()
+                        if breed == displayedBreeds.last {
+                            loadNextPage()
+                        }
                     }
-                }
             }
             .padding()
             .background(Color(.systemBackground))

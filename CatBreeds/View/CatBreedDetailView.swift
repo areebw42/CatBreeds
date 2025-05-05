@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+
 /*
  View used to show more detailed information compared to the standard card view.
  It appears when the card view is tapped, and displays the Country, Origin, Coat and Pattern values returned by the API.
@@ -21,12 +22,12 @@ struct CatBreedDetailView: View {
     @Binding var showDetail: Bool
 
     private let standardSpacing: CGFloat = 20
-    
+
     //binding for selectedCat so we can also set that to nil
     @Binding var selectedCat: CatBreed?
 
     var drag: some Gesture {
-       //Define gesture for dragging the view
+        //Define gesture for dragging the view
         DragGesture()
             .onChanged { gesture in
                 if gesture.translation.height > 0 {
@@ -74,7 +75,6 @@ struct CatBreedDetailView: View {
 
                 CatBreedInfoView(catBreed: catBreed)
 
-
             }
 
             Button(
@@ -92,7 +92,7 @@ struct CatBreedDetailView: View {
                         }
                     )
                 },
-                
+
                 label: {
                     Image(systemName: "xmark.circle.fill")
                         .resizable()
