@@ -7,41 +7,40 @@
 
 import SwiftUI
 
-
 struct catCardView: View {
     let breed: CatBreed
+    let standardWidth: CGFloat
     @State var image: URL? = nil
+    
     var body: some View {
         VStack {
 
             if image != nil {
-             if let imageURL = image {
-                 AsyncImage(url: imageURL) { phase in
-                       if let image = phase.image {
-                           image.resizable().scaledToFit()
-                       } else if phase.error != nil {
-                           AsyncImage(url: imageURL) { phase in
-                               if let image = phase.image {
-                                   image.resizable().scaledToFit()
-                               }
-                           }
-                       }
-                     
-                     else {
-                           ProgressView()
-                       }
-                 }
+                if let imageURL = image {
+                    AsyncImage(url: imageURL) { phase in
+                        if let image = phase.image {
+                            image.resizable().scaledToFit()
+                        } else if phase.error != nil {
+                            AsyncImage(url: imageURL) { phase in
+                                if let image = phase.image {
+                                    image.resizable().scaledToFit()
+                                }
+                            }
+                        } else {
+                            ProgressView()
+                        }
+                    }
                 }
             } else {
                 Text("Image Unavailable")
                     .foregroundColor(.red)
-                    .frame(width: 100)
+                    .frame(width: standardWidth)
                     .font(.headline)
                     .scaledToFit()
             }
 
             Text(breed.breed)
-                .frame(width: 100)
+                .frame(width: standardWidth)
                 .font(.headline)
                 .scaledToFit()
         }.task {
@@ -83,21 +82,21 @@ struct ContentView: View {
         ) {
             ForEach(displayedBreeds) { breed in
                 //The individual cards are displayed by this VStack.
-                catCardView(breed: breed)
-                .scaledToFit()
-                .onTapGesture {
-                    withAnimation(.spring()) {
-                        selectedBreed = breed
-                        showDetail = true
+                catCardView(breed: breed, standardWidth: standardWidth)
+                    .scaledToFit()
+                    .onTapGesture {
+                        withAnimation(.spring()) {
+                            selectedBreed = breed
+                            showDetail = true
+                        }
                     }
-                }
-                .scaledToFit()
-                .onScrollVisibilityChange { _ in
+                    .scaledToFit()
+                    .onScrollVisibilityChange { _ in
 
-                    if breed == displayedBreeds.last {
-                        loadNextPage()
+                        if breed == displayedBreeds.last {
+                            loadNextPage()
+                        }
                     }
-                }
             }
             .padding()
             .background(Color(.systemBackground))

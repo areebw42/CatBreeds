@@ -23,12 +23,20 @@ struct ImageResponse: Decodable {
     let query: Query
 }
 
-func removeChar(from string: String, delimiter: Character) -> String {
-    var s = string
-    if s.contains(delimiter) {
-        s.removeSubrange(s.firstIndex(of: delimiter)!..<s.endIndex)
+extension String {
+    func removeChar(delimiters: String) -> String {
+        var finalString = self
+        for delimiter in delimiters {
+            if finalString.contains(delimiter) {
+                finalString.removeSubrange(
+                    finalString.firstIndex(
+                        of: delimiter
+                    )!..<finalString.endIndex
+                )
+            }
+        }
+        return finalString
     }
-    return s
 }
 
 func sanitizeInput(breed: String, addSuffix: Bool) -> String {
@@ -36,9 +44,7 @@ func sanitizeInput(breed: String, addSuffix: Bool) -> String {
     if toReturn.contains("Persian") && toReturn.contains("Traditional") {
         toReturn = "Traditional_Persian"
     }
-    toReturn = removeChar(from: toReturn, delimiter: "(")
-    toReturn = removeChar(from: toReturn, delimiter: ",")
-    toReturn = removeChar(from: toReturn, delimiter: "[")
+    toReturn = toReturn.removeChar(delimiters: "(,[")
     if toReturn.contains("Cymric") {
         toReturn = "Cymric"
     }
@@ -66,18 +72,23 @@ func fetchImageResponse(breedName: String) async -> ImageResponse {
     do {
         let (data, _) = try await URLSession.shared.data(from: url)
         received = try JSONDecoder().decode(ImageResponse.self, from: data)
-    } catch {}
+    } catch {
+        print("Error fetching image: \(error)")
+    }
     return received
 }
 
 func fetchImage(breed: String) async -> URL? {
+    //convert name format and add _cat
     var breedName = sanitizeInput(breed: breed, addSuffix: true)
     var received = await fetchImageResponse(breedName: breedName)
+    //if the name didn't work, try it without _cat
     if received.query.pages.isEmpty {
         breedName = sanitizeInput(breed: breed, addSuffix: false)
         received = await fetchImageResponse(breedName: breedName)
     }
 
+    //extract image URL and returns
     let address = received.query.pages.first?.thumbnail.source ?? ""
     guard !address.isEmpty else {
         return nil
