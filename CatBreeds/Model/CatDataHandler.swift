@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 /* The following are decodable structs matching the JSON response from the API*/
 
 struct Fact: Decodable {
@@ -52,24 +51,34 @@ struct FactResponse: Decodable {
     let to: Int
     let total: Int
 }
-func fetchBreeds() async -> BreedResponse? {
-    let url = URL(string: "https://catfact.ninja/breeds?limit=100")!
-    var received: BreedResponse? = nil
+
+func fetchData(_urlString: String) async -> Data? {
+    guard let url = URL(string: _urlString) else { return nil }
+    //Get the response from the URL, we only need the data portion of the tuple
+    //Fix cache bug by using ephemeral config with nil cache
+    let config = URLSessionConfiguration.ephemeral
+    config.urlCache = nil
+    let session = URLSession(configuration: config)
     do {
-        //Get the response from the URL, we only need the data portion of the tuple
-        //Fix cache bug by using ephemeral config with nil cache
-        let config = URLSessionConfiguration.ephemeral
-        config.urlCache = nil
-        let session = URLSession(configuration: config)
-        let (data, responce) = try await session.data(from: url)
-        print(responce)
-        let decoder = JSONDecoder()
-        //Set the decoding strategy in order to convert from the JSON response's snake case to camel case
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        let data = try await session.data(from: url)
+        return data.0
+    } catch {
+        print("Error fetching data \(error)")
+        return nil
+    }
+}
+
+func fetchBreeds() async -> BreedResponse? {
+    var received: BreedResponse? = nil
+    guard let data = await fetchData(_urlString: breedsUrl) else { return nil }
+    let decoder = JSONDecoder()
+    //Set the decoding strategy in order to convert from the JSON response's snake case to camel case
+    decoder.keyDecodingStrategy = .convertFromSnakeCase
+    do {
         received = try decoder.decode(BreedResponse.self, from: data)
     } catch {
-        print("Failed to fetch data: \(error)")
-        exit(1)
+        print("Error decoding data \(error)")
     }
+
     return received
 }
