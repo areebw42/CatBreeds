@@ -9,10 +9,7 @@ import Foundation
 
 /* The following are decodable structs matching the JSON response from the API*/
 
-struct Fact: Decodable {
-    let fact: String
-    let length: Int
-}
+
 
 struct Link: Decodable {
     let url: String?
@@ -38,7 +35,7 @@ struct BreedResponse: Decodable {
 
 struct FactResponse: Decodable {
     let currentPage: Int
-    let data: [Fact]
+    let data: [CatFact]
     let firstPageUrl: String
     let from: Int
     let lastPage: Int
@@ -80,5 +77,20 @@ func fetchBreeds() async -> BreedResponse? {
         print("Error decoding data \(error)")
     }
 
+    return received
+}
+
+func fetchFacts() async -> FactResponse? {
+    var received: FactResponse? = nil
+    guard let data = await fetchData(_urlString: factsUrl) else { return nil }
+    let decoder = JSONDecoder()
+    decoder.keyDecodingStrategy = .convertFromSnakeCase
+    do {
+        received = try decoder.decode(FactResponse.self, from: data)
+    }
+    catch {
+        print("Error decoding data \(error)")
+    }
+    
     return received
 }
