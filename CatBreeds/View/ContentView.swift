@@ -53,7 +53,8 @@ struct catCardView: View {
     }
 }
 
-struct ContentView: View {
+struct CatBreedsView: View {
+    
     @Namespace private var animation
 
     @State private var breeds: [CatBreed] = []
@@ -72,10 +73,6 @@ struct ContentView: View {
     private let standardSpacing: CGFloat = 16
     private let standardColumns = [GridItem(.flexible()), GridItem(.flexible())]
     
-    struct BreedsResponse: Decodable {
-        let data: [CatBreed]
-    }
-
     //The view that displays the cards in the grid
     private var catGridView: some View {
         ScrollView{
@@ -103,33 +100,29 @@ struct ContentView: View {
         }
     }
     
-
     var body: some View {
         ZStack {
-            ScrollView {
-                catGridView
-            }
-            .padding()
-
-            if showDetail, let selectedBreed = selectedBreed {
-                CatBreedDetailView(
-                    catBreed: selectedBreed,
-                    animation: animation,
-                    showDetail: $showDetail,
-                    selectedCat: $selectedBreed
-                )
-                .transition(
-                    .asymmetric(
-                        insertion: .scale.animation(.spring()),
-                        removal: .move(edge: .bottom)
-                    )
-                )
-            }
-
+        ScrollView {
+            catGridView
         }
-        //Initial fetch of breeds
-       
+        .padding()
 
+        if showDetail, let selectedBreed = selectedBreed {
+            CatBreedDetailView(
+                catBreed: selectedBreed,
+                animation: animation,
+                showDetail: $showDetail,
+                selectedCat: $selectedBreed
+            )
+            .transition(
+                .asymmetric(
+                    insertion: .scale.animation(.spring()),
+                    removal: .move(edge: .bottom)
+                )
+            )
+        }
+
+    }
     }
     
     private func chunkBreeds(_ breeds: [CatBreed]) -> [[CatBreed]] {
@@ -137,5 +130,29 @@ struct ContentView: View {
             Array(breeds[$0..<min($0 + pageSize, breeds.count)])
         }
     }
+}
+
+struct ContentView: View {
+    
+    
+    struct BreedsResponse: Decodable {
+        let data: [CatBreed]
+    }
+
+    
+    
+
+    var body: some View {
+        NavigationStack {
+                    CatBreedsView()
+                .navigationBarTitle("Cat Breeds")
+            }
+        }
+        //Initial fetch of breeds
+       
+
+
+    
+   
 
 }
