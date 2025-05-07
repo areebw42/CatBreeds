@@ -28,11 +28,8 @@ extension String {
         var finalString = self
         for delimiter in delimiters {
             if finalString.contains(delimiter) {
-                finalString.removeSubrange(
-                    finalString.firstIndex(
-                        of: delimiter
-                    )!..<finalString.endIndex
-                )
+                //remove all occurences of the delimiter char
+                finalString = finalString.replacingOccurrences(of: String(delimiter), with: "")
             }
         }
         return finalString
@@ -62,11 +59,11 @@ func sanitizeInput(breed: String, addSuffix: Bool) -> String {
     return toReturn
 }
 
-func fetchImageResponse(breedName: String) async -> ImageResponse {
-    let url = URL(
+func fetchImageResponse(breedName: String) async -> ImageResponse? {
+    guard let url = URL(
         string:
             "https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&titles=\(breedName)&prop=pageimages|pageterms&pithumbsize=300&redirects=1"
-    )!
+    ) else { return nil }
     var received: ImageResponse = ImageResponse(query: Query(pages: []))
 
     do {
@@ -83,15 +80,15 @@ func fetchImage(breed: String) async -> URL? {
     var breedName = sanitizeInput(breed: breed, addSuffix: true)
     var received = await fetchImageResponse(breedName: breedName)
     //if the name didn't work, try it without _cat
-    if received.query.pages.isEmpty {
+    if ((received?.query.pages.isEmpty) != nil) {
         breedName = sanitizeInput(breed: breed, addSuffix: false)
         received = await fetchImageResponse(breedName: breedName)
     }
 
     //extract image URL and returns
-    let address = received.query.pages.first?.thumbnail.source ?? ""
+    let address = received?.query.pages.first?.thumbnail.source ?? ""
     guard !address.isEmpty else {
         return nil
     }
-    return URL(string: address) ?? URL(string: "")!
+    return URL(string: address)
 }

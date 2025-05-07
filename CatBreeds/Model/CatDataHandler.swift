@@ -53,7 +53,7 @@ struct FactResponse: Decodable {
     let total: Int
 }
 func fetchBreeds() async -> BreedResponse? {
-    let url = URL(string: "https://catfact.ninja/breeds?limit=1000")!
+    guard let url = URL(string: "https://catfact.ninja/breeds?limit=1000") else { return nil }
     var received: BreedResponse? = nil
     do {
         //Get the response from the URL, we only need the data portion of the tuple
