@@ -23,18 +23,7 @@ struct ImageResponse: Decodable {
     let query: Query
 }
 
-extension String {
-    func removeChar(delimiters: String) -> String {
-        var finalString = self
-        for delimiter in delimiters {
-            if finalString.contains(delimiter) {
-                //remove all occurences of the delimiter char
-                finalString = finalString.replacingOccurrences(of: String(delimiter), with: "")
-            }
-        }
-        return finalString
-    }
-}
+
 
 func sanitizeInput(breed: String, addSuffix: Bool) -> String {
     var toReturn = breed.replacingOccurrences(of: " ", with: "_")
