@@ -11,7 +11,7 @@ struct catCardView: View {
     let breed: CatBreed
     let standardWidth: CGFloat
     @State var image: URL? = nil
-    
+
     var body: some View {
         VStack {
 
@@ -44,9 +44,7 @@ struct catCardView: View {
                 .font(.headline)
                 .scaledToFit()
         }.task {
-            print("beginning image fetch")
             image = await fetchImage(breed: breed.breed)
-            print("image fetched")
         }
     }
 }
