@@ -133,13 +133,7 @@ struct CatBreedsView: View {
         }
         .task {
             breeds = await fetchBreeds()?.data ?? []
-            if breeds == [] {
-                exit(1)
-            }
             chunkedBreeds = chunkBreeds(breeds)
-            if chunkedBreeds == [] {
-                exit(1)
-            }
         }
     }
     
