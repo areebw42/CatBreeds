@@ -33,7 +33,7 @@ final class CatBreedsUITests: XCTestCase {
         XCTAssertGreaterThan(numCards, 0)
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
-    
+
     @MainActor
     func testPaginationDown() throws {
         let app = XCUIApplication()
@@ -44,7 +44,6 @@ final class CatBreedsUITests: XCTestCase {
         let numCards = scrollView.staticTexts.allElementsBoundByIndex.count
         XCTAssertGreaterThanOrEqual(numCards, 20)
     }
-    
 
     @MainActor
     func testLaunchPerformance() throws {

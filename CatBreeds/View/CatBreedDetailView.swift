@@ -22,12 +22,12 @@ struct CatBreedDetailView: View {
     @Binding var showDetail: Bool
 
     private let standardSpacing: CGFloat = 20
-    
+
     //binding for selectedCat so we can also set that to nil
     @Binding var selectedCat: CatBreed?
 
     var drag: some Gesture {
-       //Define gesture for dragging the view
+        //Define gesture for dragging the view
         DragGesture()
             .onChanged { gesture in
                 if gesture.translation.height > 0 {
@@ -61,18 +61,16 @@ struct CatBreedDetailView: View {
         //ZStack to layer info and button.
         ZStack(alignment: .topTrailing) {
             VStack(spacing: standardSpacing) {
-                Image(systemName: "pawprint.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 250, height: 250)
-                    .clipped()
-                    .matchedGeometryEffect(id: catBreed.id, in: animation)
-                    .cornerRadius(16)
-                    .padding(.top, 40)
-
+                if catBreed.image != nil {
+                    AsyncImage(url: catBreed.image) { image in
+                        image
+                            .image?.resizable().scaledToFit()
+                    }
+                }
                 Text(catBreed.breed)
                     .font(.largeTitle)
                     .fontWeight(.bold)
+
                     .padding(.top, standardSpacing)
 
                 CatBreedInfoView(catBreed: catBreed)
@@ -94,7 +92,7 @@ struct CatBreedDetailView: View {
                         }
                     )
                 },
-                
+
                 label: {
                     Image(systemName: "xmark.circle.fill")
                         .resizable()

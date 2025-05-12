@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 /* The following are decodable structs matching the JSON response from the API*/
 
 struct Fact: Decodable {
@@ -52,11 +53,14 @@ struct FactResponse: Decodable {
     let total: Int
 }
 func fetchBreeds() async -> BreedResponse? {
-    let url = URL(string: "https://catfact.ninja/breeds?limit=1000")!
+    guard let url = URL(string: "https://catfact.ninja/breeds?limit=1000") else { return nil }
     var received: BreedResponse? = nil
     do {
         //Get the response from the URL, we only need the data portion of the tuple
-        let (data, _) = try await URLSession.shared.data(from: url)
+        //create ephemeral session that won't retain cache
+        let session = URLSession(configuration: .ephemeral)
+        session.configuration.urlCache = nil
+        let (data, _) = try await session.data(from: url)
         let decoder = JSONDecoder()
         //Set the decoding strategy in order to convert from the JSON response's snake case to camel case
         decoder.keyDecodingStrategy = .convertFromSnakeCase
