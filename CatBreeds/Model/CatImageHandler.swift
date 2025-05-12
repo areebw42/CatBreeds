@@ -23,8 +23,6 @@ struct ImageResponse: Decodable {
     let query: Query
 }
 
-
-
 func sanitizeInput(breed: String, addSuffix: Bool) -> String {
     var toReturn = breed.replacingOccurrences(of: " ", with: "_")
     if toReturn.contains("Persian") && toReturn.contains("Traditional") {
@@ -34,13 +32,13 @@ func sanitizeInput(breed: String, addSuffix: Bool) -> String {
     if toReturn.contains("Cymric") {
         toReturn = "Cymric"
     }
-    if toReturn.contains("Cheetoh") {
+    else if toReturn.contains("Cheetoh") {
         toReturn = "Bengal"
     }
-    if toReturn.contains("Sam_Sawet") {
+    else if toReturn.contains("Sam_Sawet") {
         toReturn = "Thai"
     }
-    if addSuffix {
+    else if addSuffix {
         if !toReturn.lowercased().hasSuffix("_cat") {
             toReturn += "_cat"
         }
