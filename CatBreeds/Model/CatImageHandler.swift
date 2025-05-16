@@ -23,32 +23,19 @@ struct ImageResponse: Decodable {
     let query: Query
 }
 
-func removePunctuation(from string: String, delimiter: Character) -> String {
-    var s = string
-    if s.contains(delimiter) {
-        s.removeSubrange(s.firstIndex(of: delimiter)!..<s.endIndex)
-    }
-    return s
-}
-
 func sanitizeInput(breed: String, addSuffix: Bool) -> String {
     var toReturn = breed.replacingOccurrences(of: " ", with: "_")
     if toReturn.contains("Persian") && toReturn.contains("Traditional") {
         toReturn = "Traditional_Persian"
     }
-    toReturn = removePunctuation(from: toReturn, delimiter: "(")
-    toReturn = removePunctuation(from: toReturn, delimiter: ",")
-    toReturn = removePunctuation(from: toReturn, delimiter: "[")
+    toReturn = toReturn.removeChar(delimiters: "(,[")
     if toReturn.contains("Cymric") {
         toReturn = "Cymric"
-    }
-    if toReturn.contains("Cheetoh") {
+    } else if toReturn.contains("Cheetoh") {
         toReturn = "Bengal"
-    }
-    if toReturn.contains("Sam_Sawet") {
+    } else if toReturn.contains("Sam_Sawet") {
         toReturn = "Thai"
-    }
-    if addSuffix {
+    } else if addSuffix {
         if !toReturn.lowercased().hasSuffix("_cat") {
             toReturn += "_cat"
         }
@@ -56,31 +43,38 @@ func sanitizeInput(breed: String, addSuffix: Bool) -> String {
     return toReturn
 }
 
-func fetchImageResponse(breedName: String) async -> ImageResponse {
-    let url = URL(
-        string:
-            "https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&titles=\(breedName)&prop=pageimages|pageterms&pithumbsize=300&redirects=1"
-    )!
+func fetchImageResponse(breedName: String) async -> ImageResponse? {
+    guard
+        let url = URL(
+            string:
+                "https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&titles=\(breedName)&prop=pageimages|pageterms&pithumbsize=300&redirects=1"
+        )
+    else { return nil }
     var received: ImageResponse = ImageResponse(query: Query(pages: []))
 
     do {
         let (data, _) = try await URLSession.shared.data(from: url)
         received = try JSONDecoder().decode(ImageResponse.self, from: data)
-    } catch {}
+    } catch {
+        print("Error fetching image: \(error)")
+    }
     return received
 }
 
 func fetchImage(breed: String) async -> URL? {
+    //convert name format and add _cat
     var breedName = sanitizeInput(breed: breed, addSuffix: true)
     var received = await fetchImageResponse(breedName: breedName)
-    if received.query.pages.isEmpty {
+    //if the name didn't work, try it without _cat
+    if (received?.query.pages.isEmpty) != nil {
         breedName = sanitizeInput(breed: breed, addSuffix: false)
         received = await fetchImageResponse(breedName: breedName)
     }
 
-    let address = received.query.pages.first?.thumbnail.source ?? ""
+    //extract image URL and returns
+    let address = received?.query.pages.first?.thumbnail.source ?? ""
     guard !address.isEmpty else {
         return nil
     }
-    return URL(string: address) ?? URL(string: "")!
+    return URL(string: address)
 }

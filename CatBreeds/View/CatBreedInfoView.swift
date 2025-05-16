@@ -9,7 +9,6 @@ import SwiftUI
 struct CatBreedInfoView: View {
     let catBreed: CatBreed
 
-
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             //Compute strings based on static labels and breed info
@@ -20,7 +19,6 @@ struct CatBreedInfoView: View {
         }
         .font(.body)
         .padding(.horizontal)
-       
 
     }
 

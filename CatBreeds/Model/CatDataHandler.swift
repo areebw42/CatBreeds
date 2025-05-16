@@ -9,8 +9,6 @@ import Foundation
 
 /* The following are decodable structs matching the JSON response from the API*/
 
-
-
 struct Link: Decodable {
     let url: String?
     let label: String?
@@ -72,6 +70,7 @@ func fetchBreeds() async -> BreedResponse? {
     //Set the decoding strategy in order to convert from the JSON response's snake case to camel case
     decoder.keyDecodingStrategy = .convertFromSnakeCase
     do {
+
         received = try decoder.decode(BreedResponse.self, from: data)
     } catch {
         print("Error decoding data \(error)")
@@ -87,10 +86,9 @@ func fetchFacts() async -> FactResponse? {
     decoder.keyDecodingStrategy = .convertFromSnakeCase
     do {
         received = try decoder.decode(FactResponse.self, from: data)
-    }
-    catch {
+    } catch {
         print("Error decoding data \(error)")
     }
-    
+
     return received
 }
