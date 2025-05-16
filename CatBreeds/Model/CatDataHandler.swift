@@ -47,6 +47,7 @@ struct FactResponse: Decodable {
     let total: Int
 }
 
+
 func fetchData(_urlString: String) async -> Data? {
     guard let url = URL(string: _urlString) else { return nil }
     //Get the response from the URL, we only need the data portion of the tuple
@@ -70,6 +71,7 @@ func fetchBreeds() async -> BreedResponse? {
     //Set the decoding strategy in order to convert from the JSON response's snake case to camel case
     decoder.keyDecodingStrategy = .convertFromSnakeCase
     do {
+
 
         received = try decoder.decode(BreedResponse.self, from: data)
     } catch {

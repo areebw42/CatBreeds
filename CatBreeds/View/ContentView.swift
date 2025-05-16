@@ -117,6 +117,7 @@ struct CatBreedsView: View {
 
     //The view that displays the cards in the grid
     private var catGridView: some View {
+        
         ScrollView {
             //This structure paginates the data in both directions, in practice it loads everything almost instantly, if there were thousands of elements returned then it would diplay as many as possible while loading others.
             LazyVStack {
@@ -134,18 +135,18 @@ struct CatBreedsView: View {
                                 selectedBreed = item
                                 showDetail = true
                             }
+                            
                         }
                     }
                 }
             }
+            .task {
+                breeds = await fetchBreeds()?.data ?? []
+                chunkedBreeds = chunkBreeds(breeds)
+            }
+            
         }
-        .task {
-            breeds = await fetchBreeds()?.data ?? []
-            chunkedBreeds = chunkBreeds(breeds)
-        }
-        
     }
-
     var body: some View {
         ZStack {
       
@@ -177,35 +178,37 @@ struct CatBreedsView: View {
         }
     }
 }
+    
 
-struct ContentView: View {
-
-    struct BreedsResponse: Decodable {
-        let data: [CatBreed]
-    }
-
-   
-
-    var body: some View {
-
-        NavigationStack {
-            Text("Select Breeds or facts: ")
-                .font(.title)
-                .padding(.vertical)
-            NavigationLink("Breeds") {
-                CatBreedsView()
-                    .navigationBarTitle("Cat Breeds")
-            }
-            .font(.largeTitle)
-            .padding(.vertical)
-            NavigationLink("Facts") {
-                CatFactsView()
-                    .navigationBarTitle("Cat Facts")
-            }
-            .font(.largeTitle)
-            .padding(.vertical)
+    struct ContentView: View {
+        
+        struct BreedsResponse: Decodable {
+            let data: [CatBreed]
         }
+        
+        
+        
+        var body: some View {
+            
+            NavigationStack {
+                Text("Select Breeds or facts: ")
+                    .font(.title)
+                    .padding(.vertical)
+                NavigationLink("Breeds") {
+                    CatBreedsView()
+                        .navigationBarTitle("Cat Breeds")
+                }
+                .font(.largeTitle)
+                .padding(.vertical)
+                NavigationLink("Facts") {
+                    CatFactsView()
+                        .navigationBarTitle("Cat Facts")
+                }
+                .font(.largeTitle)
+                .padding(.vertical)
+            }
+        }
+        //Initial fetch of breeds
     }
-    //Initial fetch of breeds
 
-}
+

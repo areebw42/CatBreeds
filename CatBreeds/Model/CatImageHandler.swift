@@ -28,14 +28,17 @@ func sanitizeInput(breed: String, addSuffix: Bool) -> String {
     if toReturn.contains("Persian") && toReturn.contains("Traditional") {
         toReturn = "Traditional_Persian"
     }
+    
     toReturn = toReturn.removeChar(delimiters: "(,[")
     if toReturn.contains("Cymric") {
         toReturn = "Cymric"
+
     } else if toReturn.contains("Cheetoh") {
         toReturn = "Bengal"
     } else if toReturn.contains("Sam_Sawet") {
         toReturn = "Thai"
     } else if addSuffix {
+
         if !toReturn.lowercased().hasSuffix("_cat") {
             toReturn += "_cat"
         }
@@ -50,6 +53,7 @@ func fetchImageResponse(breedName: String) async -> ImageResponse? {
                 "https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&titles=\(breedName)&prop=pageimages|pageterms&pithumbsize=300&redirects=1"
         )
     else { return nil }
+
     var received: ImageResponse = ImageResponse(query: Query(pages: []))
 
     do {
@@ -67,6 +71,7 @@ func fetchImage(breed: String) async -> URL? {
     var received = await fetchImageResponse(breedName: breedName)
     //if the name didn't work, try it without _cat
     if (received?.query.pages.isEmpty) != nil {
+
         breedName = sanitizeInput(breed: breed, addSuffix: false)
         received = await fetchImageResponse(breedName: breedName)
     }
