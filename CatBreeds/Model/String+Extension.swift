@@ -7,14 +7,10 @@
 
 extension String {
     func removeChar(delimiters: String) -> String {
-        var finalString = self
+        let finalString = self
         for delimiter in delimiters {
-            if finalString.contains(delimiter) {
-                //remove all occurences of the delimiter char
-                finalString = finalString.replacingOccurrences(
-                    of: String(delimiter),
-                    with: ""
-                )
+            if let index = finalString.firstIndex(of: delimiter) {
+                return String(finalString[..<index])
             }
         }
         return finalString

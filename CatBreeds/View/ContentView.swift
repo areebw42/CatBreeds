@@ -143,13 +143,14 @@ struct CatBreedsView: View {
             breeds = await fetchBreeds()?.data ?? []
             chunkedBreeds = chunkBreeds(breeds)
         }
+        
     }
 
     var body: some View {
         ZStack {
-            ScrollView {
+      
                 catGridView
-            }
+          
             .padding()
 
             if showDetail, let selectedBreed = selectedBreed {
