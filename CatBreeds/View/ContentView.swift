@@ -53,6 +53,7 @@ struct CatFactsView: View {
 
     @State private var facts: [CatFact] = []
     @State private var chunkedFacts: [[CatFact]] = []
+    @State private var success : Bool = true
 
     private let pageSize = 20
     private let standardWidth: CGFloat = 120
@@ -64,22 +65,30 @@ struct CatFactsView: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack {
-                ForEach(chunkedFacts, id: \.self) { chunk in
-                    LazyVStack {
-                        ForEach(chunk, id: \.self) { fact in
-                            Text(fact.fact)
-                                .font(.caption)
-                                .padding(.vertical)
+            if success {
+                LazyVStack {
+                    ForEach(chunkedFacts, id: \.self) { chunk in
+                        LazyVStack {
+                            ForEach(chunk, id: \.self) { fact in
+                                Text(fact.fact)
+                                    .font(.caption)
+                                    .padding(.vertical)
 
+                            }
                         }
-                    }
 
+                    }
                 }
+            }
+            else{
+                Text(dataError).font(.largeTitle)
             }
         }
         .task {
             facts = await fetchFacts()?.data ?? []
+            if facts == [] {
+                success = false
+            }
             chunkedFacts = chunkFacts(facts)
         }
     }
@@ -105,6 +114,8 @@ struct CatBreedsView: View {
 
     @State private var alertMessage: String?
 
+    @State private var success: Bool = true
+
     private var loadedOnce = false
 
     private let pageSize = 20
@@ -117,7 +128,7 @@ struct CatBreedsView: View {
 
     //The view that displays the cards in the grid
     private var catGridView: some View {
-        
+
         ScrollView {
             //This structure paginates the data in both directions, in practice it loads everything almost instantly, if there were thousands of elements returned then it would diplay as many as possible while loading others.
             LazyVStack {
@@ -135,40 +146,48 @@ struct CatBreedsView: View {
                                 selectedBreed = item
                                 showDetail = true
                             }
-                            
+
                         }
                     }
                 }
             }
             .task {
                 breeds = await fetchBreeds()?.data ?? []
+                if breeds == [] {
+                    success = false
+                }
                 chunkedBreeds = chunkBreeds(breeds)
             }
-            
+
         }
     }
     var body: some View {
-        ZStack {
-      
+        if success {
+            ZStack {
+
                 catGridView
-          
-            .padding()
 
-            if showDetail, let selectedBreed = selectedBreed {
-                CatBreedDetailView(
-                    catBreed: selectedBreed,
-                    animation: animation,
-                    showDetail: $showDetail,
-                    selectedCat: $selectedBreed
-                )
-                .transition(
-                    .asymmetric(
-                        insertion: .scale.animation(.spring()),
-                        removal: .move(edge: .bottom)
+                    .padding()
+
+                if showDetail, let selectedBreed = selectedBreed {
+                    CatBreedDetailView(
+                        catBreed: selectedBreed,
+                        animation: animation,
+                        showDetail: $showDetail,
+                        selectedCat: $selectedBreed
                     )
-                )
-            }
+                    .transition(
+                        .asymmetric(
+                            insertion: .scale.animation(.spring()),
+                            removal: .move(edge: .bottom)
+                        )
+                    )
+                }
 
+            }
+        }
+        else {
+            Text(dataError).font(.largeTitle)
         }
     }
 
@@ -178,37 +197,32 @@ struct CatBreedsView: View {
         }
     }
 }
-    
 
-    struct ContentView: View {
-        
-        struct BreedsResponse: Decodable {
-            let data: [CatBreed]
-        }
-        
-        
-        
-        var body: some View {
-            
-            NavigationStack {
-                Text("Select Breeds or facts: ")
-                    .font(.title)
-                    .padding(.vertical)
-                NavigationLink("Breeds") {
-                    CatBreedsView()
-                        .navigationBarTitle("Cat Breeds")
-                }
-                .font(.largeTitle)
-                .padding(.vertical)
-                NavigationLink("Facts") {
-                    CatFactsView()
-                        .navigationBarTitle("Cat Facts")
-                }
-                .font(.largeTitle)
-                .padding(.vertical)
-            }
-        }
-        //Initial fetch of breeds
+struct ContentView: View {
+
+    struct BreedsResponse: Decodable {
+        let data: [CatBreed]
     }
 
+    var body: some View {
 
+        NavigationStack {
+            Text("Select Breeds or facts: ")
+                .font(.title)
+                .padding(.vertical)
+            NavigationLink("Breeds") {
+                CatBreedsView()
+                    .navigationBarTitle("Cat Breeds")
+            }
+            .font(.largeTitle)
+            .padding(.vertical)
+            NavigationLink("Facts") {
+                CatFactsView()
+                    .navigationBarTitle("Cat Facts")
+            }
+            .font(.largeTitle)
+            .padding(.vertical)
+        }
+    }
+    //Initial fetch of breeds
+}
