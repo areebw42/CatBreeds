@@ -191,18 +191,18 @@ struct CatBreedsView: View {
         var body: some View {
             
             NavigationStack {
-                Text("Select Breeds or facts: ")
+                Text(selectDialogue)
                     .font(.title)
                     .padding(.vertical)
-                NavigationLink("Breeds") {
+                NavigationLink(breedsTitle) {
                     CatBreedsView()
-                        .navigationBarTitle("Cat Breeds")
+                        .navigationBarTitle(breedsTitle)
                 }
                 .font(.largeTitle)
                 .padding(.vertical)
-                NavigationLink("Facts") {
+                NavigationLink(factsTitle) {
                     CatFactsView()
-                        .navigationBarTitle("Cat Facts")
+                        .navigationBarTitle(factsTitle)
                 }
                 .font(.largeTitle)
                 .padding(.vertical)

@@ -70,7 +70,7 @@ func fetchImage(breed: String) async -> URL? {
     var breedName = sanitizeInput(breed: breed, addSuffix: true)
     var received = await fetchImageResponse(breedName: breedName)
     //if the name didn't work, try it without _cat
-    if (received?.query.pages.isEmpty) != nil {
+    if let currentPages : Bool = received?.query.pages.isEmpty  {
 
         breedName = sanitizeInput(breed: breed, addSuffix: false)
         received = await fetchImageResponse(breedName: breedName)
