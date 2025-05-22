@@ -197,32 +197,37 @@ struct CatBreedsView: View {
         }
     }
 }
+    
 
-struct ContentView: View {
-
-    struct BreedsResponse: Decodable {
-        let data: [CatBreed]
-    }
-
-    var body: some View {
-
-        NavigationStack {
-            Text("Select Breeds or facts: ")
-                .font(.title)
-                .padding(.vertical)
-            NavigationLink("Breeds") {
-                CatBreedsView()
-                    .navigationBarTitle("Cat Breeds")
-            }
-            .font(.largeTitle)
-            .padding(.vertical)
-            NavigationLink("Facts") {
-                CatFactsView()
-                    .navigationBarTitle("Cat Facts")
-            }
-            .font(.largeTitle)
-            .padding(.vertical)
+    struct ContentView: View {
+        
+        struct BreedsResponse: Decodable {
+            let data: [CatBreed]
         }
+        
+        
+        
+        var body: some View {
+            
+            NavigationStack {
+                Text(selectDialogue)
+                    .font(.title)
+                    .padding(.vertical)
+                NavigationLink(breedsTitle) {
+                    CatBreedsView()
+                        .navigationBarTitle(breedsTitle)
+                }
+                .font(.largeTitle)
+                .padding(.vertical)
+                NavigationLink(factsTitle) {
+                    CatFactsView()
+                        .navigationBarTitle(factsTitle)
+                }
+                .font(.largeTitle)
+                .padding(.vertical)
+            }
+        }
+        //Initial fetch of breeds
     }
-    //Initial fetch of breeds
-}
+
+
