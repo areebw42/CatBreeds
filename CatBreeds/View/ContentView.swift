@@ -8,15 +8,15 @@
 import SwiftUI
 
 struct catCardView: View {
-    let breed: CatBreed
+    @State var breed: CatBreed
     let standardWidth: CGFloat
-    @State var image: URL? = nil
+   
 
     var body: some View {
         LazyVStack {
 
-            if image != nil {
-                if let imageURL = image {
+            if breed.image != nil {
+                if let imageURL = breed.image {
                     AsyncImage(url: imageURL) { phase in
                         if let image = phase.image {
                             image.resizable().scaledToFit()
@@ -44,7 +44,7 @@ struct catCardView: View {
                 .font(.headline)
                 .scaledToFit()
         }.task {
-            image = await fetchImage(breed: breed.breed)
+            breed.image = await fetchImage(breed: breed.breed)
         }
     }
 }

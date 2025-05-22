@@ -50,14 +50,17 @@ func fetchImageResponse(breedName: String) async -> ImageResponse? {
     guard
         let url = URL(
             string:
-                "https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&titles=\(breedName)&prop=pageimages|pageterms&pithumbsize=300&redirects=1"
+                "https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&titles=\(breedName)&prop=pageimages|pageterms&pithumbsize=300&redirects=10"
         )
     else { return nil }
 
     var received: ImageResponse = ImageResponse(query: Query(pages: []))
 
     do {
-        let (data, _) = try await URLSession.shared.data(from: url)
+        //create ephemeral session with null cache
+        let session = URLSession(configuration: .ephemeral)
+        session.configuration.urlCache = nil
+        let (data, _) = try await session.data(from: url)
         received = try JSONDecoder().decode(ImageResponse.self, from: data)
     } catch {
         print("Error fetching image: \(error)")
@@ -70,7 +73,7 @@ func fetchImage(breed: String) async -> URL? {
     var breedName = sanitizeInput(breed: breed, addSuffix: true)
     var received = await fetchImageResponse(breedName: breedName)
     //if the name didn't work, try it without _cat
-    if let currentPages : Bool = received?.query.pages.isEmpty  {
+    if received?.query.pages.isEmpty ?? true  {
 
         breedName = sanitizeInput(breed: breed, addSuffix: false)
         received = await fetchImageResponse(breedName: breedName)
