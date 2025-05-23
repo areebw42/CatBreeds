@@ -31,12 +31,12 @@ func sanitizeInput(breed: String, addSuffix: Bool) -> String {
     
     toReturn = toReturn.removeChar(delimiters: "(,[")
     if toReturn.contains("Cymric") {
-        toReturn = "Cymric"
+        toReturn = "Cymric_cat"
 
     } else if toReturn.contains("Cheetoh") {
-        toReturn = "Bengal"
+        toReturn = "Bengal_cat"
     } else if toReturn.contains("Sam_Sawet") {
-        toReturn = "Thai"
+        toReturn = "Thai_cat"
     } else if addSuffix {
 
         if !toReturn.lowercased().hasSuffix("_cat") {
