@@ -25,6 +25,13 @@ struct catCardView: View {
                                 if let image = phase.image {
                                     image.resizable().scaledToFit()
                                 }
+                                else if phase.error != nil {
+                                    AsyncImage(url: imageURL) { phase in
+                                        if let image = phase.image {
+                                            image.resizable().scaledToFit()
+                                        }
+                                    }
+                                }
                             }
                         } else {
                             ProgressView()
