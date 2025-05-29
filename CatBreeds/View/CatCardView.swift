@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 //
 //  CatCardView.swift
 //  CatBreeds
@@ -8,8 +8,6 @@
 
 import SwiftUI
 
-=======
->>>>>>> 596dee0f400820b2a1b9bdb18c1b2e1809193985
 struct CatCardView: View {
     let breed: CatBreed
     let standardWidth: CGFloat
@@ -50,8 +48,4 @@ struct CatCardView: View {
             image = await fetchImage(breed: breed.breed)
         }
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 596dee0f400820b2a1b9bdb18c1b2e1809193985

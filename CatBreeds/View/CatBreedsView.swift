@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-//
+
 //  CatBreedsView.swift
 //  CatBreeds
 //
@@ -8,8 +7,7 @@
 
 import SwiftUI
 
-=======
->>>>>>> 596dee0f400820b2a1b9bdb18c1b2e1809193985
+
 struct CatBreedsView: View {
 
     @Namespace private var animation
@@ -44,11 +42,9 @@ struct CatBreedsView: View {
                         spacing: standardSpacing
                     ) {
                         ForEach(page) { item in
-<<<<<<< HEAD
+
                             CatCardView(
-=======
-                            catCardView(
->>>>>>> 596dee0f400820b2a1b9bdb18c1b2e1809193985
+
                                 breed: item,
                                 standardWidth: standardWidth
                             )
@@ -98,8 +94,5 @@ struct CatBreedsView: View {
             Array(breeds[$0..<min($0 + pageSize, breeds.count)])
         }
     }
-<<<<<<< HEAD
+
 }
-=======
-}
->>>>>>> 596dee0f400820b2a1b9bdb18c1b2e1809193985
