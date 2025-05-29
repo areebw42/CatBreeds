@@ -38,6 +38,9 @@
 				Strings.swift,
 				View/CatBreedDetailView.swift,
 				View/CatBreedInfoView.swift,
+				View/CatBreedsView.swift,
+				View/CatCardView.swift,
+				View/CatFactsView.swift,
 				View/ContentView.swift,
 				ViewModel/CatBreed.swift,
 			);
@@ -129,7 +132,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2015432A2DA71124009AEE7E /* Build configuration list for PBXNativeTarget "CatBreeds" */;
 			buildPhases = (
-				2018D0232DE0F22A00475A74 /* ShellScript */,
 				201543052DA71123009AEE7E /* Sources */,
 				201543062DA71123009AEE7E /* Frameworks */,
 				201543072DA71123009AEE7E /* Resources */,
@@ -261,27 +263,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		2018D0232DE0F22A00475A74 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nfind \"${SRCROOT}\" -name \"*swift\"\n/opt/homebrew/bin/swiftlint \"${SRCROOT}/CatBreeds\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		201543052DA71123009AEE7E /* Sources */ = {

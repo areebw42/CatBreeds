@@ -71,8 +71,6 @@ func fetchBreeds() async -> BreedResponse? {
     //Set the decoding strategy in order to convert from the JSON response's snake case to camel case
     decoder.keyDecodingStrategy = .convertFromSnakeCase
     do {
-
-
         received = try decoder.decode(BreedResponse.self, from: data)
     } catch {
         print("Error decoding data \(error)")
@@ -82,7 +80,7 @@ func fetchBreeds() async -> BreedResponse? {
 }
 
 func fetchFacts() async -> FactResponse? {
-    var received: FactResponse? = nil
+    var received: FactResponse?
     guard let data = await fetchData(urlString: factsUrl) else { return nil }
     let decoder = JSONDecoder()
     decoder.keyDecodingStrategy = .convertFromSnakeCase
