@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 //
 //  CatFactsView.swift
 //  CatBreeds
@@ -7,6 +8,8 @@
 
 import SwiftUI
 
+=======
+>>>>>>> 596dee0f400820b2a1b9bdb18c1b2e1809193985
 struct CatFactsView: View {
 
     @State private var facts: [CatFact] = []
@@ -48,4 +51,8 @@ struct CatFactsView: View {
 
     }
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 596dee0f400820b2a1b9bdb18c1b2e1809193985
