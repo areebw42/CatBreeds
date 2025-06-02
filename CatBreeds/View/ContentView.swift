@@ -8,34 +8,25 @@
 import SwiftUI
 
     struct ContentView: View {
+       
         
         struct BreedsResponse: Decodable {
             let data: [CatBreed]
         }
         
-        
-        
         var body: some View {
-            
-            NavigationStack {
-                Text(selectDialogue)
-                    .font(.title)
-                    .padding(.vertical)
-                NavigationLink(breedsTitle) {
-                    CatBreedsView()
-                        .navigationBarTitle(breedsTitle)
+            NavigationView {
+                List {
+                    NavigationLink(destination: CatBreedsView()) {
+                        Text("Breeds")
+                    }
+                    NavigationLink(destination: CatFactsView()) {
+                        Text("Facts")
+                    }
+                    
                 }
-                .font(.largeTitle)
-                .padding(.vertical)
-                NavigationLink(factsTitle) {
-                    CatFactsView()
-                        .navigationBarTitle(factsTitle)
-                }
-                .font(.largeTitle)
-                .padding(.vertical)
+                .navigationTitle(Text("Main Menu"))
+            }
             }
         }
         //Initial fetch of breeds
-    }
-
-
