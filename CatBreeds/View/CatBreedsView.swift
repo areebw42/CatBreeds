@@ -49,7 +49,6 @@ struct CatBreedsView: View {
                         ) {
                             if (searchQuery.isEmpty){
                                 ForEach(page) { item in
-
                                     CatCardView(
 
                                         breed: item,
@@ -59,14 +58,13 @@ struct CatBreedsView: View {
                                         selectedBreed = item
                                         showDetail = true
                                     }
-                                    
                                 }
                             }
                             else{
                                ForEach(page) { item in
-                                   if (item.breed.lowercased().contains(searchQuery.lowercased())){
+                                   let combinedString = item.breed+item.country+item.origin+item.coat+item.pattern
+                                   if (combinedString.lowercased().contains(searchQuery.lowercased())){
                                        CatCardView(
-                                        
                                         breed: item,
                                         standardWidth: standardWidth
                                        )
