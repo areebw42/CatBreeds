@@ -64,7 +64,7 @@ struct CatBreedsView: View {
                             }
                             else{
                                ForEach(page) { item in
-                                   if item.breed.lowercased().contains(searchQuery.lowercased()){
+                                   if (item.breed.lowercased().contains(searchQuery.lowercased())){
                                        CatCardView(
                                         
                                         breed: item,

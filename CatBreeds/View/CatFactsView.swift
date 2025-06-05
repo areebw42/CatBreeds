@@ -13,7 +13,7 @@ struct CatFactsView: View {
 
     @State private var facts: [CatFact] = []
     @State private var chunkedFacts: [[CatFact]] = []
-
+    @State private var searchQuery: String = ""
     private let pageSize = 20
     private let standardWidth: CGFloat = 120
     private let standardCornerRadius: CGFloat = 12
@@ -23,15 +23,30 @@ struct CatFactsView: View {
     ]
 
     var body: some View {
-        ScrollView {
-            LazyVStack {
-                ForEach(chunkedFacts, id: \.self) { chunk in
-                    LazyVStack {
-                        ForEach(chunk, id: \.self) { fact in
-                            Text(fact.fact)
-                                .font(.caption)
-                                .padding(.vertical)
+        VStack {
+            TextField("Search", text: $searchQuery).padding()
+            ScrollView {
+                LazyVStack {
+                    ForEach(chunkedFacts, id: \.self) { chunk in
+                        LazyVStack {
+                            if(searchQuery.isEmpty){
+                                ForEach(chunk, id: \.self) { fact in
+                                    Text(fact.fact)
+                                        .font(.caption)
+                                        .padding(.vertical)
 
+                                }
+                            }
+                            else {
+                                ForEach(chunk, id: \.self) { fact in
+                                    if(fact.fact.lowercased().contains(searchQuery.lowercased())){
+                                        Text(fact.fact)
+                                            .font(.caption)
+                                            .padding(.vertical)
+                                    }
+
+                                }
+                            }
                         }
                     }
                 }
