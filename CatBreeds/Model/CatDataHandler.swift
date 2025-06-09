@@ -48,8 +48,8 @@ struct FactResponse: Decodable {
 }
 
 
-func fetchData(_urlString: String) async -> Data? {
-    guard let url = URL(string: _urlString) else { return nil }
+func fetchData(urlString: String) async -> Data? {
+    guard let url = URL(string: urlString) else { return nil }
     //Get the response from the URL, we only need the data portion of the tuple
     //Fix cache bug by using ephemeral config with nil cache
     let config = URLSessionConfiguration.ephemeral
@@ -66,13 +66,11 @@ func fetchData(_urlString: String) async -> Data? {
 
 func fetchBreeds() async -> BreedResponse? {
     var received: BreedResponse? = nil
-    guard let data = await fetchData(_urlString: breedsUrl) else { return nil }
+    guard let data = await fetchData(urlString: breedsUrl) else { return nil }
     let decoder = JSONDecoder()
     //Set the decoding strategy in order to convert from the JSON response's snake case to camel case
     decoder.keyDecodingStrategy = .convertFromSnakeCase
     do {
-
-
         received = try decoder.decode(BreedResponse.self, from: data)
     } catch {
         print("Error decoding data \(error)")
@@ -82,8 +80,8 @@ func fetchBreeds() async -> BreedResponse? {
 }
 
 func fetchFacts() async -> FactResponse? {
-    var received: FactResponse? = nil
-    guard let data = await fetchData(_urlString: factsUrl) else { return nil }
+    var received: FactResponse?
+    guard let data = await fetchData(urlString: factsUrl) else { return nil }
     let decoder = JSONDecoder()
     decoder.keyDecodingStrategy = .convertFromSnakeCase
     do {

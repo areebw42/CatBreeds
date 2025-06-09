@@ -47,8 +47,7 @@ func sanitizeInput(breed: String, addSuffix: Bool) -> String {
 }
 
 func fetchImageResponse(breedName: String) async -> ImageResponse? {
-    guard
-        let url = URL(
+    guard let url = URL(
             string:
                 "https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&titles=\(breedName)&prop=pageimages|pageterms&pithumbsize=300&redirects=1"
         )
@@ -70,7 +69,7 @@ func fetchImage(breed: String) async -> URL? {
     var breedName = sanitizeInput(breed: breed, addSuffix: true)
     var received = await fetchImageResponse(breedName: breedName)
     //if the name didn't work, try it without _cat
-    if (received?.query.pages.isEmpty) != nil {
+    if let pages = received?.query.pages.isEmpty  {
 
         breedName = sanitizeInput(breed: breed, addSuffix: false)
         received = await fetchImageResponse(breedName: breedName)
