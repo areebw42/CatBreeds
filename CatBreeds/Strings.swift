@@ -18,6 +18,5 @@ let dataError = "Error fetching data"
 let selectDialogue = "Select Breeds or facts:"
 let breedsTitle = "Cat Breeds"
 let factsTitle = "Cat Facts"
-let dataError = "Error fetching data"
 let mainTitle = "Main Menu"
 
