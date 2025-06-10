@@ -31,12 +31,12 @@ func sanitizeInput(breed: String, addSuffix: Bool) -> String {
     
     toReturn = toReturn.removeChar(delimiters: "(,[")
     if toReturn.contains("Cymric") {
-        toReturn = "Cymric"
+        toReturn = "Cymric_cat"
 
     } else if toReturn.contains("Cheetoh") {
-        toReturn = "Bengal"
+        toReturn = "Bengal_cat"
     } else if toReturn.contains("Sam_Sawet") {
-        toReturn = "Thai"
+        toReturn = "Thai_cat"
     } else if addSuffix {
 
         if !toReturn.lowercased().hasSuffix("_cat") {
@@ -49,14 +49,17 @@ func sanitizeInput(breed: String, addSuffix: Bool) -> String {
 func fetchImageResponse(breedName: String) async -> ImageResponse? {
     guard let url = URL(
             string:
-                "https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&titles=\(breedName)&prop=pageimages|pageterms&pithumbsize=300&redirects=1"
+                "https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&titles=\(breedName)&prop=pageimages|pageterms&pithumbsize=300&redirects=10"
         )
     else { return nil }
 
     var received: ImageResponse = ImageResponse(query: Query(pages: []))
 
     do {
-        let (data, _) = try await URLSession.shared.data(from: url)
+        //create ephemeral session with null cache
+        let session = URLSession(configuration: .ephemeral)
+        session.configuration.urlCache = nil
+        let (data, _) = try await session.data(from: url)
         received = try JSONDecoder().decode(ImageResponse.self, from: data)
     } catch {
         print("Error fetching image: \(error)")
@@ -70,6 +73,7 @@ func fetchImage(breed: String) async -> URL? {
     var received = await fetchImageResponse(breedName: breedName)
     //if the name didn't work, try it without _cat
     if let pages = received?.query.pages.isEmpty  {
+
 
         breedName = sanitizeInput(breed: breed, addSuffix: false)
         received = await fetchImageResponse(breedName: breedName)
