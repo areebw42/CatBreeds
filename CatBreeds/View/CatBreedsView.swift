@@ -17,7 +17,7 @@ struct CatBreedsView: View {
     @State private var displayedBreeds: [CatBreed] = []
     @State private var selectedBreed: CatBreed?
     @State private var showDetail: Bool = false
-
+    @State var searchQuery: String = ""
     @State private var alertMessage: String?
 
     private var loadedOnce = false
@@ -33,37 +33,61 @@ struct CatBreedsView: View {
     //The view that displays the cards in the grid
     private var catGridView: some View {
         
-        ScrollView {
-            //This structure paginates the data in both directions, in practice it loads everything almost instantly, if there were thousands of elements returned then it would diplay as many as possible while loading others.
-            LazyVStack {
-                ForEach(chunkedBreeds, id: \.self) { page in
-                    LazyVGrid(
-                        columns: standardColumns,
-                        spacing: standardSpacing
-                    ) {
-                        ForEach(page) { item in
+      
+     
+       VStack {
+            TextField("Search", text: $searchQuery)
+                .padding()
+            
+            ScrollView {
+                //This structure paginates the data in both directions, in practice it loads everything almost instantly, if there were thousands of elements returned then it would diplay as many as possible while loading others.
+                LazyVStack {
+                    ForEach(chunkedBreeds, id: \.self) { page in
+                        LazyVGrid(
+                            columns: standardColumns,
+                            spacing: standardSpacing
+                        ) {
+                            if (searchQuery.isEmpty){
+                                ForEach(page) { item in
+                                    CatCardView(
 
-                            CatCardView(
-
-                                breed: item,
-                                standardWidth: standardWidth
-                            )
-                            .onTapGesture {
-                                selectedBreed = item
-                                showDetail = true
+                                        breed: item,
+                                        standardWidth: standardWidth
+                                    )
+                                    .onTapGesture {
+                                        selectedBreed = item
+                                        showDetail = true
+                                    }
+                                }
                             }
-                            
+                            else{
+                               ForEach(page) { item in
+                                   let combinedString = item.breed+item.country+item.origin+item.coat+item.pattern
+                                   if (combinedString.lowercased().contains(searchQuery.lowercased())){
+                                       CatCardView(
+                                        breed: item,
+                                        standardWidth: standardWidth
+                                       )
+                                       .onTapGesture {
+                                           selectedBreed = item
+                                           showDetail = true
+                                       }
+                                   }
+                                }
+                            }
                         }
                     }
                 }
+                
+                .task {
+                    breeds = await fetchBreeds()?.data ?? []
+                    chunkedBreeds = chunkBreeds(breeds)
+                }
+                
             }
-            .task {
-                breeds = await fetchBreeds()?.data ?? []
-                chunkedBreeds = chunkBreeds(breeds)
-            }
-            
         }
     }
+    
     var body: some View {
         ZStack {
       
